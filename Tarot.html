@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lectura de Tarot - ComicVerse</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Lato:wght@300;400&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --deep-purple: #1a0b2e;
+            --card-back: #2d1b4e;
+            --mystic-gold: #ffd700;
+        }
+
+        body {
+            background-color: var(--deep-purple);
+            color: white;
+            font-family: 'Lato', sans-serif;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 20% 30%, rgba(139, 92, 246, 0.15) 0%, transparent 40%),
+                radial-gradient(circle at 80% 70%, rgba(255, 215, 0, 0.05) 0%, transparent 40%);
+        }
+
+        .mystic-font { font-family: 'Cinzel', serif; }
+
+        /* --- Input Místico --- */
+        .astral-input-container {
+            position: relative; margin-bottom: 2rem; max-width: 600px; margin-left: auto; margin-right: auto;
+        }
+        .astral-input {
+            width: 100%; background: rgba(0, 0, 0, 0.6); border: 2px solid #4c1d95;
+            padding: 1.5rem; border-radius: 12px; color: #ffd700; font-size: 1.1rem;
+            text-align: center; transition: all 0.3s ease; box-shadow: 0 0 20px rgba(76, 29, 149, 0.2);
+        }
+        .astral-input:focus {
+            outline: none; border-color: var(--mystic-gold);
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.3); background: rgba(0, 0, 0, 0.8);
+        }
+
+        /* --- Botón Mágico --- */
+        .magic-btn {
+            background: linear-gradient(135deg, #4c1d95, #2e1065); border: 1px solid var(--mystic-gold);
+            color: var(--mystic-gold); padding: 12px 30px; font-family: 'Cinzel', serif; font-weight: bold;
+            font-size: 1.1rem; border-radius: 50px; cursor: pointer; transition: all 0.3s;
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.2); text-transform: uppercase; letter-spacing: 2px;
+            position: relative; overflow: hidden;
+        }
+        .magic-btn:hover {
+            transform: scale(1.05) translateY(-2px); box-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
+        }
+
+        /* --- Mesa de Cartas --- */
+        .tarot-table {
+            display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;
+            margin-top: 3rem; perspective: 1500px; min-height: 450px;
+        }
+        .card-wrapper { width: 220px; height: 380px; position: relative; transform-style: preserve-3d; }
+        .tarot-card {
+            width: 100%; height: 100%; position: relative; transform-style: preserve-3d;
+            transition: transform 1s cubic-bezier(0.175, 0.885, 0.32, 1.275); cursor: pointer;
+            border-radius: 12px; box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+        }
+        .card-wrapper:hover .tarot-card { transform: translateY(-15px) rotateX(5deg); }
+        .tarot-card.flipped { transform: rotateY(180deg); }
+
+        /* --- DISEÑO DE CARTAS RIDER-WAITE STYLE --- */
+        .tarot-face {
+            position: absolute; width: 100%; height: 100%; backface-visibility: hidden;
+            border-radius: 12px; overflow: hidden; box-shadow: inset 0 0 10px rgba(0,0,0,0.8);
+        }
+
+        /* Reverso */
+        .tarot-back {
+            background: repeating-linear-gradient(45deg, #1a0b2e, #1a0b2e 10px, #251042 10px, #251042 20px);
+            border: 4px solid #432c7a; display: flex; align-items: center; justify-content: center;
+        }
+        .tarot-back::after {
+            content: '✦'; font-size: 4rem; color: #ffd700; filter: drop-shadow(0 0 10px #ffd700);
+            animation: pulse 3s infinite;
+        }
+
+        /* Frente (Estilo Rider-Waite Mejorado) */
+        .rw-style {
+            background: #eaddcf; /* Color papel antiguo */
+            border: 6px solid #222;
+            display: flex; flex-direction: column;
+            color: #111;
+        }
+        .rw-inner-border {
+            border: 2px solid #b49b56; margin: 4px; flex: 1; display: flex; flex-direction: column;
+            background: linear-gradient(to bottom, #fff5e6, #e6dace);
+        }
+        .rw-image-container {
+            flex: 1; overflow: hidden; position: relative;
+            border-bottom: 2px solid #222;
+        }
+        .rw-image {
+            width: 100%; height: 100%; object-fit: cover;
+            filter: sepia(0.3) contrast(1.1);
+        }
+        .rw-label-box {
+            height: 40px; display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            background: #fff; border-top: 1px solid #b49b56;
+        }
+        .rw-number {
+            font-family: 'Cinzel', serif; font-weight: 900; font-size: 0.8rem; letter-spacing: 2px;
+            color: #333; margin-bottom: -2px;
+        }
+        .rw-name {
+            font-family: 'Cinzel', serif; font-weight: bold; font-size: 0.7rem; text-transform: uppercase;
+            color: #000; letter-spacing: 1px;
+        }
+
+        /* --- Resultado IA --- */
+        .oracle-box {
+            background: rgba(10, 5, 20, 0.95); border: 1px solid var(--mystic-gold);
+            border-radius: 16px; padding: 2rem; margin-top: 3rem; max-width: 800px;
+            margin-left: auto; margin-right: auto; display: none; animation: fadeIn 1s ease-out;
+            box-shadow: 0 0 50px rgba(138, 43, 226, 0.2); backdrop-filter: blur(10px);
+        }
+        .oracle-text { color: #e0e0e0; line-height: 1.8; font-size: 1rem; text-align: justify; white-space: pre-wrap; }
+
+        /* --- Modales --- */
+        .modal-overlay {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 100;
+            display: none; align-items: center; justify-content: center; backdrop-filter: blur(10px);
+        }
+        .modal-content {
+            background: #111; border: 2px solid #F47521; padding: 2rem;
+            border-radius: 15px; text-align: center; max-width: 400px; width: 90%;
+            box-shadow: 0 0 60px rgba(244,117,33,0.3); animation: bounceIn 0.3s;
+        }
+        
+        .loading-pulse { animation: pulse 1.5s infinite; color: var(--mystic-gold); margin-top: 20px; }
+        @keyframes pulse { 0% { opacity: 0.5; } 50% { opacity: 1; } 100% { opacity: 0.5; } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes bounceIn { 0% { transform: scale(0.8); } 60% { transform: scale(1.1); } 100% { transform: scale(1); } }
+    </style>
+</head>
+<body class="p-4 md:p-8 min-h-screen">
+
+    <!-- TITULO -->
+    <div class="text-center mb-8 pt-4">
+        <h1 class="text-4xl md:text-6xl mystic-font text-white drop-shadow-[0_0_15px_rgba(138,43,226,0.8)] mb-2">
+            El Oráculo del <span class="text-[#ffd700]">Tarot</span>
+        </h1>
+        <p class="text-purple-300 text-sm md:text-base tracking-widest uppercase">Consulta a los Arcanos Rider-Waite</p>
+    </div>
+
+    <!-- ÁREA DE CONSULTA -->
+    <div class="max-w-3xl mx-auto text-center z-10 relative">
+        <div class="astral-input-container">
+            <input type="text" id="user-question" class="astral-input" placeholder="Concéntrate y escribe tu pregunta..." autocomplete="off">
+        </div>
+
+        <button id="consult-btn" onclick="handleConsult()" class="magic-btn group w-full max-w-xs mx-auto block">
+            <span id="btn-text"><i class="fa-solid fa-eye"></i> Consultar a las Cartas</span>
+        </button>
+        
+        <p id="attempts-display" class="text-xs text-gray-500 mt-4 font-mono uppercase tracking-widest">
+            Intentos Gratis: <span id="attempts-count" class="text-white font-bold">3</span>/3
+        </p>
+    </div>
+
+    <!-- MESA DE JUEGO -->
+    <div id="game-area" class="mt-8 hidden">
+        <div class="tarot-table" id="cards-container"></div>
+        
+        <div id="loading-oracle" class="hidden loading-pulse">
+            <i class="fa-solid fa-spinner fa-spin text-3xl"></i><br>Interpretando tirada...
+        </div>
+
+        <div id="result-box" class="oracle-box">
+            <h3 class="text-center text-[#ffd700] mystic-font text-xl mb-4 border-b border-white/10 pb-2">Interpretación Astral</h3>
+            <div id="ai-response" class="oracle-text"></div>
+            <div class="text-center mt-6">
+                <button onclick="location.reload()" class="text-xs text-gray-400 hover:text-white underline uppercase tracking-widest">Nueva Lectura</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL DE BLOQUEO (LA TRAMPA) -->
+    <div id="lock-modal" class="modal-overlay">
+        <div class="modal-content">
+            <i class="fa-solid fa-lock text-5xl text-red-500 mb-4 animate-bounce"></i>
+            <h3 class="text-2xl font-black text-white uppercase mb-2">Energía Agotada</h3>
+            <p class="text-gray-300 text-sm mb-6">
+                Has usado tus 3 consultas gratuitas de hoy. Los astros necesitan recargarse o una ofrenda extra.
+            </p>
+            
+            <div id="timer-box" class="hidden mb-4 bg-red-900/30 p-2 rounded text-red-400 font-mono text-xs">
+                Vuelve en: <span id="cooldown-timer">00:00:00</span>
+            </div>
+
+            <button onclick="triggerTrap()" class="w-full bg-gradient-to-r from-green-600 to-green-400 text-black font-black uppercase py-3 rounded shadow-[0_0_20px_rgba(34,197,94,0.4)] hover:scale-105 transition">
+                <i class="fa-solid fa-unlock"></i> Ganar 5 Consultas Gratis
+            </button>
+            
+            <p class="text-[10px] text-gray-600 mt-3">
+                Solo usuarios Premium tienen intentos infinitos.
+            </p>
+        </div>
+    </div>
+
+    <!-- MODAL LOGIN REQUERIDO -->
+    <div id="auth-modal" class="modal-overlay">
+        <div class="modal-content border-blue-500 shadow-blue-500/20">
+            <i class="fa-solid fa-user-lock text-5xl text-blue-500 mb-4"></i>
+            <h3 class="text-xl font-bold text-white mb-2">Identificación Requerida</h3>
+            <p class="text-gray-400 text-xs mb-6">Para conectar con tu energía espiritual y guardar tu historial, debes iniciar sesión.</p>
+            <button onclick="parent.cargarPagina('Usuariotarot.html', null)" class="w-full bg-blue-600 text-white font-bold py-2 rounded uppercase text-xs hover:bg-blue-500 transition">
+                Ir a Iniciar Sesión
+            </button>
+        </div>
+    </div>
+
+    <!-- FIREBASE & LOGIC -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
+        import { getFirestore, doc, getDoc, setDoc, updateDoc, increment } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyB8EgfX8W3GdhtOnSVpqSnk33DeS-SNV3Y",
+            authDomain: "tarotastral-dc552.firebaseapp.com",
+            projectId: "tarotastral-dc552",
+            storageBucket: "tarotastral-dc552.firebasestorage.app",
+            messagingSenderId: "666976665528",
+            appId: "1:666976665528:web:c2b4c27c3e50b9a953194d"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
+
+        let currentUser = null;
+        let userPremium = false;
+        let userAttempts = 0;
+        let lastDate = "";
+
+        // --- AUTH & DATA CHECK ---
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                currentUser = user;
+                // Check User Data
+                const userRef = doc(db, "users", user.uid);
+                const snap = await getDoc(userRef);
+                
+                if (snap.exists()) {
+                    const data = snap.data();
+                    userPremium = data.isPremium || false;
+                    
+                    // Reset diario
+                    const today = new Date().toDateString();
+                    if (data.lastTarotDate !== today) {
+                        await updateDoc(userRef, { dailyTarotAttempts: 0, lastTarotDate: today });
+                        userAttempts = 0;
+                    } else {
+                        userAttempts = data.dailyTarotAttempts || 0;
+                    }
+                    updateAttemptsUI();
+                } else {
+                    // Create basic doc if missing
+                    await setDoc(userRef, { dailyTarotAttempts: 0, lastTarotDate: new Date().toDateString() });
+                }
+            } else {
+                // Show Login Modal immediately
+                document.getElementById('auth-modal').style.display = 'flex';
+            }
+        });
+
+        function updateAttemptsUI() {
+            const countEl = document.getElementById('attempts-count');
+            if (userPremium) {
+                countEl.innerHTML = "∞"; 
+                countEl.classList.add("text-[#ffd700]");
+            } else {
+                countEl.innerText = 3 - userAttempts;
+                if(userAttempts >= 3) showLockModal();
+            }
+        }
+
+        function showLockModal() {
+            const modal = document.getElementById('lock-modal');
+            const timerBox = document.getElementById('timer-box');
+            const timerEl = document.getElementById('cooldown-timer');
+            
+            modal.style.display = 'flex';
+            
+            // Calculo simple de 24h restando desde medianoche o fijo
+            timerBox.classList.remove('hidden');
+            
+            // Countdown visual simple
+            setInterval(() => {
+                const now = new Date();
+                const tomorrow = new Date(now);
+                tomorrow.setDate(tomorrow.getDate() + 1);
+                tomorrow.setHours(0,0,0,0);
+                const diff = tomorrow - now;
+                
+                const h = Math.floor(diff / (1000 * 60 * 60));
+                const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                const s = Math.floor((diff % (1000 * 60)) / 1000);
+                timerEl.innerText = `${h}h ${m}m ${s}s`;
+            }, 1000);
+        }
+
+        // Exponer funciones al window
+        window.handleConsult = handleConsult;
+        window.triggerTrap = triggerTrap;
+
+        // --- SISTEMA DE CONSULTA ---
+        let adWatched = false;
+        const AD_LINK = "https://sonsstoop.com/m01qcuj94d?key=d329b61721f0136ad3e9f372b07145f6";
+
+        async function handleConsult() {
+            if (!currentUser) { document.getElementById('auth-modal').style.display = 'flex'; return; }
+            
+            // Verificar Límites
+            if (!userPremium && userAttempts >= 3) {
+                showLockModal();
+                return;
+            }
+
+            const question = document.getElementById('user-question').value.trim();
+            if (!question) return alert("El universo necesita una pregunta clara.");
+
+            // Paso 1: Anuncio Obligatorio
+            if (!adWatched) {
+                window.open(AD_LINK, '_blank');
+                adWatched = true;
+                const btn = document.getElementById('consult-btn');
+                btn.innerHTML = '<span id="btn-text"><i class="fa-solid fa-sparkles"></i> Revelar Ahora</span>';
+                btn.classList.add('animate-pulse');
+                return;
+            }
+
+            // Paso 2: Consumir Intento y Tirar
+            if (!userPremium) {
+                const userRef = doc(db, "users", currentUser.uid);
+                await updateDoc(userRef, { dailyTarotAttempts: increment(1) });
+                userAttempts++;
+                updateAttemptsUI();
+            }
+
+            startReading(question);
+        }
+
+        // --- LA TRAMPA (QuartzFiles) ---
+        function triggerTrap() {
+            // Inyectar script de QuartzFiles
+            const script = document.createElement('script');
+            script.type = 'text/javascript';
+            script.src = 'https://quartzfiles.com/script_include.php?id=1863416';
+            document.body.appendChild(script);
+
+            // Simular espera y fallar
+            setTimeout(() => {
+                alert("❌ ERROR: Tardaste demasiado o no completaste la verificación.\n\nEl sistema requiere validación estricta para otorgar tiradas gratis.\n\nRefresca la página y vuelve a intentarlo rápido.");
+                location.reload();
+            }, 5000); // 5s delay para dar esperanza falsa
+        }
+
+        // --- LÓGICA TAROT (Visuales y Deck) ---
+        
+        const majorArcana = ["The Fool", "The Magician", "The High Priestess", "The Empress", "The Emperor", "The Hierophant", "The Lovers", "The Chariot", "Strength", "The Hermit", "Wheel of Fortune", "Justice", "The Hanged Man", "Death", "Temperance", "The Devil", "The Tower", "The Star", "The Moon", "The Sun", "Judgement", "The World"];
+        const suits = ["Wands", "Cups", "Swords", "Pentacles"];
+        const ranks = ["Ace", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Page", "Knight", "Queen", "King"];
+        let deck = [];
+
+        // Build Deck
+        majorArcana.forEach((n, i) => deck.push({ name: n, type: "Major", num: toRoman(i), imgPrompt: `Rider Waite tarot card ${n}` }));
+        suits.forEach(s => ranks.forEach((r, i) => deck.push({ name: `${r} of ${s}`, type: "Minor", num: toRoman(i+1), imgPrompt: `Rider Waite tarot card ${r} of ${s}` })));
+
+        function toRoman(num) {
+            if(num===0) return "0";
+            const roman = {M:1000,CM:900,D:500,CD:400,C:100,XC:90,L:50,XL:40,X:10,IX:9,V:5,IV:4,I:1};
+            let str = '';
+            for(let i of Object.keys(roman)){
+                let q = Math.floor(num/roman[i]);
+                num -= q*roman[i];
+                str += i.repeat(q);
+            }
+            return str;
+        }
+
+        async function startReading(q) {
+            document.getElementById('consult-btn').style.display = 'none';
+            document.getElementById('game-area').classList.remove('hidden');
+            const container = document.getElementById('cards-container');
+            container.innerHTML = '';
+
+            // Pick 3
+            let picked = [];
+            while(picked.length < 3) {
+                const r = deck[Math.floor(Math.random() * deck.length)];
+                if(!picked.includes(r)) picked.push(r);
+            }
+
+            // Render
+            const positions = ["Pasado", "Presente", "Futuro"];
+            picked.forEach((c, i) => {
+                // Generar imagen con IA Pollinations al vuelo para asegurar estilo
+                const imgUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(c.imgPrompt + " classic tarot illustration high resolution detailed")}?width=300&height=500&nologo=true`;
+
+                const html = `
+                    <div class="card-wrapper" id="wrap-${i}">
+                        <div class="tarot-card" id="card-${i}">
+                            <div class="tarot-face tarot-back"></div>
+                            <div class="tarot-face tarot-front rw-style">
+                                <div class="rw-inner-border">
+                                    <div class="rw-image-container"><img src="${imgUrl}" class="rw-image"></div>
+                                    <div class="rw-label-box">
+                                        <span class="rw-number">${c.num}</span>
+                                        <span class="rw-name">${c.name}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-label mt-4" id="lbl-${i}">${positions[i]}</div>
+                    </div>
+                `;
+                container.insertAdjacentHTML('beforeend', html);
+            });
+
+            // Reveal
+            for(let i=0; i<3; i++) {
+                await new Promise(r => setTimeout(r, 1000));
+                document.getElementById(`card-${i}`).classList.add('flipped');
+                document.getElementById(`lbl-${i}`).parentElement.classList.add('show-label');
+            }
+
+            // AI Interpretation
+            interpret(q, picked);
+        }
+
+        async function interpret(q, cards) {
+            const loading = document.getElementById('loading-oracle');
+            const result = document.getElementById('result-box');
+            loading.classList.remove('hidden');
+            result.style.display = 'none';
+
+            const cardNames = cards.map(c => c.name).join(", ");
+            const prompt = `Actúa como una tarotista experta llamada Astra. Pregunta: "${q}". Cartas: ${cardNames} (Rider-Waite). Interpreta Pasado, Presente y Futuro conectándolas. Sé mística y directa. Usa HTML <p>.`;
+
+            try {
+                const res = await fetch(`https://text.pollinations.ai/${encodeURIComponent(prompt)}`);
+                const text = await res.text();
+                document.getElementById('ai-response').innerHTML = text;
+                loading.classList.add('hidden');
+                result.style.display = 'block';
+            } catch(e) {
+                console.error(e);
+            }
+        }
+
+    </script>
+</body>
+</html>
