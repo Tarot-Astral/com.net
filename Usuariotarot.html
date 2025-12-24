@@ -36,6 +36,19 @@
             z-index: -1;
         }
 
+        /* --- Pantalla de Carga (Auth Check) --- */
+        #auth-loading {
+            position: fixed; inset: 0; background: #000; z-index: 9999;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            transition: opacity 0.5s ease;
+        }
+        .spinner {
+            width: 50px; height: 50px; border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 50%; border-top-color: var(--mystic-gold);
+            animation: spin 1s ease-in-out infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
         /* --- Inputs --- */
         .input-astral {
             width: 100%; background: rgba(0,0,0,0.5); border: 1px solid #432c7a;
@@ -107,10 +120,16 @@
 
     <div class="stars-bg"></div>
 
+    <!-- PRELOADER (Evita ver el login si ya estás logueado) -->
+    <div id="auth-loading">
+        <div class="spinner"></div>
+        <p class="text-[#ffd700] text-xs mt-4 tracking-widest animate-pulse">VERIFICANDO ALMA...</p>
+    </div>
+
     <!-- ========================== -->
     <!-- 1. LOGIN / REGISTRO -->
     <!-- ========================== -->
-    <div id="auth-container" class="w-full max-w-md bg-[#111]/80 backdrop-blur-md p-8 rounded-2xl border border-purple-500/30 shadow-2xl relative overflow-hidden animate-float">
+    <div id="auth-container" class="hidden-section w-full max-w-md bg-[#111]/80 backdrop-blur-md p-8 rounded-2xl border border-purple-500/30 shadow-2xl relative overflow-hidden animate-float">
         <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-purple-500 via-[#ffd700] to-purple-500"></div>
         
         <div class="text-center mb-8">
@@ -121,7 +140,7 @@
         <!-- Google Login (Recomendado) -->
         <button onclick="googleLogin()" class="w-full bg-white text-black font-bold py-3 rounded-lg flex items-center justify-center gap-3 mb-6 hover:bg-gray-200 transition shadow-[0_0_15px_rgba(255,255,255,0.3)]">
             <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" class="w-5 h-5">
-            Continuar con Google (Recomendado)
+            Continuar con Google
         </button>
 
         <div class="flex items-center gap-4 mb-6">
@@ -135,8 +154,12 @@
             <input type="password" id="auth-pass" placeholder="Contraseña" class="input-astral" required>
             
             <div class="flex gap-2">
-                <button type="button" onclick="emailLogin()" class="flex-1 bg-purple-900/50 border border-purple-500 text-purple-300 py-2 rounded hover:bg-purple-800 transition">Entrar</button>
-                <button type="button" onclick="emailRegister()" class="flex-1 bg-transparent border border-gray-600 text-gray-400 py-2 rounded hover:border-white hover:text-white transition">Registrarse</button>
+                <button type="button" onclick="emailLogin()" class="flex-1 bg-purple-900/50 border border-purple-500 text-purple-300 py-2 rounded hover:bg-purple-800 transition font-bold uppercase text-xs tracking-wider">
+                    Iniciar Sesión
+                </button>
+                <button type="button" onclick="emailRegister()" class="flex-1 bg-transparent border border-gray-600 text-gray-400 py-2 rounded hover:border-white hover:text-white transition font-bold uppercase text-xs tracking-wider">
+                    Registrarse
+                </button>
             </div>
         </form>
     </div>
@@ -156,7 +179,7 @@
             <button onclick="logout()" class="text-red-400 border border-red-900 px-4 py-1 rounded text-xs uppercase hover:bg-red-900/50 transition">Cerrar Sesión</button>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-10 items-start">
             
             <!-- Columna Izq: Tarjeta 3D -->
             <div class="profile-card-container" onclick="this.querySelector('.profile-card').classList.toggle('flipped')">
@@ -197,7 +220,7 @@
                 </div>
             </div>
 
-            <!-- Columna Der: Editor y Accesos -->
+            <!-- Columna Der: Editor -->
             <div class="space-y-6">
                 <!-- Panel de Edición -->
                 <div id="edit-panel" class="hidden-section bg-[#150520] p-6 rounded-xl border border-purple-500/30">
@@ -214,17 +237,12 @@
                     
                     <button onclick="saveProfile()" class="w-full bg-[#ffd700] text-black font-bold py-2 rounded hover:bg-white transition">GUARDAR CAMBIOS</button>
                 </div>
-
-                <!-- Accesos Rápidos -->
-                <div class="grid grid-cols-2 gap-4">
-                    <a href="index.html" class="bg-black/50 border border-white/10 p-4 rounded-xl flex items-center gap-3 hover:border-[#ffd700] transition group">
-                        <i class="fa-solid fa-house text-purple-400 group-hover:text-[#ffd700]"></i>
-                        <span class="text-sm font-bold text-gray-300">Volver al Inicio</span>
-                    </a>
-                    <a href="Tarot.html" class="bg-black/50 border border-white/10 p-4 rounded-xl flex items-center gap-3 hover:border-[#ffd700] transition group">
-                        <i class="fa-solid fa-layer-group text-purple-400 group-hover:text-[#ffd700]"></i>
-                        <span class="text-sm font-bold text-gray-300">Ir al Tarot</span>
-                    </a>
+                
+                <!-- Solo información, sin navegación extra innecesaria -->
+                <div class="bg-black/30 border border-white/5 p-4 rounded-xl text-center">
+                    <p class="text-gray-500 text-xs italic">
+                        "El universo está dentro de ti. Configura tu esencia para alinear tu energía."
+                    </p>
                 </div>
             </div>
 
@@ -284,24 +302,30 @@
         let moonClicks = 0;
         let allUsersCache = [];
 
-        // --- AUTH CHECK ---
+        // --- AUTH CHECK ROBUSTO ---
         onAuthStateChanged(auth, async (user) => {
+            const loadingScreen = document.getElementById('auth-loading');
             const authContainer = document.getElementById('auth-container');
             const profileContainer = document.getElementById('profile-container');
 
             if (user) {
                 // Usuario logueado: Mostrar Perfil
                 currentUserUid = user.uid;
+                await checkAndCreateUserDoc(user); // Asegurar que el doc existe
+                
                 authContainer.classList.add('hidden-section');
                 profileContainer.classList.remove('hidden-section');
-                
-                // Cargar datos de Firestore
+                loadingScreen.style.opacity = '0';
+                setTimeout(() => loadingScreen.classList.add('hidden-section'), 500);
+
                 await loadUserProfile(user);
             } else {
                 // No logueado: Mostrar Login
                 currentUserUid = null;
                 authContainer.classList.remove('hidden-section');
                 profileContainer.classList.add('hidden-section');
+                loadingScreen.style.opacity = '0';
+                setTimeout(() => loadingScreen.classList.add('hidden-section'), 500);
             }
         });
 
@@ -310,24 +334,39 @@
             try {
                 const result = await signInWithPopup(auth, provider);
                 const user = result.user;
-                await checkAndCreateUserDoc(user);
+                // El onAuthStateChanged se encargará del resto
             } catch (error) { alert("Error Google: " + error.message); }
         };
 
         window.emailLogin = async () => {
             const email = document.getElementById('auth-email').value;
             const pass = document.getElementById('auth-pass').value;
-            try { await signInWithEmailAndPassword(auth, email, pass); } 
-            catch (e) { alert("Error: " + e.message); }
+            try { 
+                await signInWithEmailAndPassword(auth, email, pass);
+                // Éxito: onAuthStateChanged manejará la UI
+            } catch (e) { 
+                if(e.code === 'auth/invalid-credential' || e.code === 'auth/user-not-found') {
+                    alert("Usuario no encontrado o contraseña incorrecta. Verifica tus datos o regístrate.");
+                } else {
+                    alert("Error: " + e.message); 
+                }
+            }
         };
 
         window.emailRegister = async () => {
             const email = document.getElementById('auth-email').value;
             const pass = document.getElementById('auth-pass').value;
+            if(pass.length < 6) return alert("La contraseña debe tener al menos 6 caracteres.");
+            
             try {
                 const res = await createUserWithEmailAndPassword(auth, email, pass);
+                // Crear documento inmediatamente
                 await checkAndCreateUserDoc(res.user);
-            } catch (e) { alert("Error Registro: " + e.message); }
+                alert("Cuenta creada con éxito. Bienvenido al Portal.");
+            } catch (e) { 
+                if(e.code === 'auth/email-already-in-use') alert("Este correo ya está registrado.");
+                else alert("Error Registro: " + e.message); 
+            }
         };
 
         window.logout = () => signOut(auth);
@@ -335,17 +374,19 @@
         // --- GESTIÓN DE PERFIL ---
         async function checkAndCreateUserDoc(user) {
             const userRef = doc(db, "users", user.uid);
-            const snap = await getDoc(userRef);
-            if (!snap.exists()) {
-                await setDoc(userRef, {
-                    username: user.displayName || "Viajero Astral",
-                    email: user.email,
-                    photoURL: user.photoURL || "https://via.placeholder.com/150",
-                    bio: "Explorando el destino...",
-                    isPremium: false,
-                    createdAt: new Date().toISOString()
-                });
-            }
+            try {
+                const snap = await getDoc(userRef);
+                if (!snap.exists()) {
+                    await setDoc(userRef, {
+                        username: user.displayName || user.email.split('@')[0],
+                        email: user.email,
+                        photoURL: user.photoURL || "https://via.placeholder.com/150/000000/FFFFFF/?text=Usuario",
+                        bio: "Explorando el destino...",
+                        isPremium: false,
+                        createdAt: new Date().toISOString()
+                    });
+                }
+            } catch(e) { console.error("Error creando doc:", e); }
         }
 
         async function loadUserProfile(user) {
@@ -498,14 +539,9 @@
             if(confirm(`¿${newStatus ? 'Dar' : 'Quitar'} Premium a este usuario?`)) {
                 try {
                     await updateDoc(doc(db, "users", uid), { isPremium: newStatus });
-                    // Actualizar lista localmente sin recargar todo
                     const userIdx = allUsersCache.findIndex(u => u.id === uid);
                     if(userIdx !== -1) allUsersCache[userIdx].isPremium = newStatus;
-                    
-                    // Si me edité a mí mismo, recargar mi perfil
                     if(uid === currentUserUid) loadUserProfile({ uid: currentUserUid });
-                    
-                    // Re-renderizar lista (con el filtro actual si lo hay)
                     window.searchUsers(); 
                 } catch(e) { alert("Error: " + e.message); }
             }
