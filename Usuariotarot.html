@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perfil Astral - ComicVerse</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Iconos FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Fuentes Místicas -->
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Lato:wght@300;400&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --deep-purple: #1a0b2e;
+            --light-purple: #432c7a;
+            --mystic-gold: #ffd700;
+            --nebula-pink: #ff00ff;
+        }
+
+        body {
+            background-color: var(--deep-purple);
+            color: white;
+            font-family: 'Lato', sans-serif;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3, h4, .mystic-font { font-family: 'Cinzel', serif; }
+
+        /* --- Estrellas de Fondo --- */
+        .stars-bg {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(ellipse at bottom, #1B2735 0%, #090A0F 100%);
+            z-index: -1;
+        }
+
+        /* --- Inputs --- */
+        .input-astral {
+            width: 100%; background: rgba(0,0,0,0.5); border: 1px solid #432c7a;
+            color: white; padding: 12px; border-radius: 8px; outline: none;
+            transition: 0.3s;
+        }
+        .input-astral:focus { border-color: var(--mystic-gold); box-shadow: 0 0 10px rgba(255, 215, 0, 0.2); }
+
+        /* --- Tarjeta 3D Perfil --- */
+        .profile-card-container { perspective: 1000px; width: 300px; height: 450px; margin: 0 auto; cursor: grab; }
+        .profile-card {
+            width: 100%; height: 100%; position: relative;
+            transform-style: preserve-3d; transition: transform 0.8s;
+            border-radius: 20px;
+        }
+        .profile-card.flipped { transform: rotateY(180deg); }
+        
+        .card-face {
+            position: absolute; width: 100%; height: 100%;
+            backface-visibility: hidden; border-radius: 20px;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            box-shadow: 0 0 30px rgba(138, 43, 226, 0.4);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        /* Frente: Datos Usuario */
+        .card-front {
+            background: linear-gradient(135deg, #2e1065, #000000);
+            border-bottom: 4px solid var(--mystic-gold);
+        }
+        
+        /* Reverso: Membresía */
+        .card-back {
+            background: linear-gradient(135deg, #000000, #1a0b2e);
+            transform: rotateY(180deg);
+        }
+        .card-back.premium { border: 2px solid var(--mystic-gold); box-shadow: 0 0 40px rgba(255, 215, 0, 0.4); }
+        .card-back.basic { border: 2px solid #555; }
+
+        .avatar-glow { box-shadow: 0 0 20px rgba(255, 215, 0, 0.3); }
+
+        /* --- Admin Panel --- */
+        .admin-modal {
+            position: fixed; inset: 0; z-index: 100; background: rgba(0,0,0,0.95);
+            display: none; align-items: center; justify-content: center;
+        }
+        .admin-content {
+            background: #150520; border: 2px solid var(--mystic-gold);
+            width: 90%; max-width: 900px; height: 80vh; border-radius: 12px;
+            display: flex; flex-direction: column; padding: 20px;
+            box-shadow: 0 0 50px rgba(255, 215, 0, 0.2);
+        }
+        
+        .user-row {
+            display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 10px;
+            padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.1);
+            align-items: center; font-size: 0.9rem;
+        }
+        .user-row:hover { background: rgba(255,255,255,0.05); }
+
+        .hidden-section { display: none !important; }
+        
+        /* Animaciones */
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+        .animate-float { animation: float 4s ease-in-out infinite; }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen justify-center items-center p-4">
+
+    <div class="stars-bg"></div>
+
+    <!-- ========================== -->
+    <!-- 1. LOGIN / REGISTRO -->
+    <!-- ========================== -->
+    <div id="auth-container" class="w-full max-w-md bg-[#111]/80 backdrop-blur-md p-8 rounded-2xl border border-purple-500/30 shadow-2xl relative overflow-hidden animate-float">
+        <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-purple-500 via-[#ffd700] to-purple-500"></div>
+        
+        <div class="text-center mb-8">
+            <h1 class="text-3xl font-bold mystic-font text-white mb-2">Portal <span class="text-[#ffd700]">Astral</span></h1>
+            <p class="text-gray-400 text-xs uppercase tracking-widest">Identifícate, Viajero</p>
+        </div>
+
+        <!-- Google Login (Recomendado) -->
+        <button onclick="googleLogin()" class="w-full bg-white text-black font-bold py-3 rounded-lg flex items-center justify-center gap-3 mb-6 hover:bg-gray-200 transition shadow-[0_0_15px_rgba(255,255,255,0.3)]">
+            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" class="w-5 h-5">
+            Continuar con Google (Recomendado)
+        </button>
+
+        <div class="flex items-center gap-4 mb-6">
+            <div class="h-px bg-gray-700 flex-1"></div>
+            <span class="text-gray-500 text-xs">O usa tu correo</span>
+            <div class="h-px bg-gray-700 flex-1"></div>
+        </div>
+
+        <form id="email-form" class="space-y-4">
+            <input type="email" id="auth-email" placeholder="Correo Electrónico" class="input-astral" required>
+            <input type="password" id="auth-pass" placeholder="Contraseña" class="input-astral" required>
+            
+            <div class="flex gap-2">
+                <button type="button" onclick="emailLogin()" class="flex-1 bg-purple-900/50 border border-purple-500 text-purple-300 py-2 rounded hover:bg-purple-800 transition">Entrar</button>
+                <button type="button" onclick="emailRegister()" class="flex-1 bg-transparent border border-gray-600 text-gray-400 py-2 rounded hover:border-white hover:text-white transition">Registrarse</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- ========================== -->
+    <!-- 2. PERFIL DE USUARIO -->
+    <!-- ========================== -->
+    <div id="profile-container" class="hidden-section w-full max-w-5xl">
+        
+        <!-- Header Perfil -->
+        <div class="flex justify-between items-center mb-8 bg-[#1a0b2e]/80 p-4 rounded-xl border border-white/10">
+            <div class="flex items-center gap-3">
+                <!-- BOTÓN OCULTO LUNA (ADMIN) -->
+                <i class="fa-solid fa-moon text-[#ffd700] text-2xl cursor-pointer hover:scale-110 transition" id="admin-moon" onclick="handleMoonClick()"></i>
+                <h2 class="text-xl font-bold mystic-font text-white">Tu Espacio Sagrado</h2>
+            </div>
+            <button onclick="logout()" class="text-red-400 border border-red-900 px-4 py-1 rounded text-xs uppercase hover:bg-red-900/50 transition">Cerrar Sesión</button>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
+            
+            <!-- Columna Izq: Tarjeta 3D -->
+            <div class="profile-card-container" onclick="this.querySelector('.profile-card').classList.toggle('flipped')">
+                <div class="profile-card" id="user-card">
+                    
+                    <!-- FRENTE: DATOS -->
+                    <div class="card-face card-front">
+                        <div class="relative mb-4">
+                            <img id="profile-avatar" src="" class="w-24 h-24 rounded-full object-cover border-2 border-[#ffd700] avatar-glow">
+                            <button onclick="event.stopPropagation(); toggleEdit()" class="absolute bottom-0 right-0 bg-[#ffd700] text-black w-8 h-8 rounded-full flex items-center justify-center hover:scale-110 transition shadow-lg">
+                                <i class="fa-solid fa-pen"></i>
+                            </button>
+                        </div>
+                        <h3 id="profile-name" class="text-2xl font-black text-white mystic-font uppercase">Usuario</h3>
+                        <p id="profile-email" class="text-xs text-gray-400 mb-4 font-mono">cargando...</p>
+                        
+                        <div class="bg-black/40 p-3 rounded w-3/4 text-center border border-white/5">
+                            <p id="profile-bio" class="text-sm text-gray-300 italic">"Sin biografía definida."</p>
+                        </div>
+
+                        <p class="text-[10px] text-[#ffd700] mt-auto mb-4 uppercase tracking-widest animate-pulse">
+                            <i class="fa-solid fa-rotate"></i> Toca para ver Membresía
+                        </p>
+                    </div>
+
+                    <!-- REVERSO: MEMBRESÍA -->
+                    <div class="card-face card-back" id="card-back-style">
+                        <i id="rank-icon" class="fa-solid fa-user text-5xl text-gray-500 mb-4"></i>
+                        <h3 id="rank-name" class="text-3xl font-black mystic-font uppercase text-gray-400">BÁSICO</h3>
+                        <p id="rank-desc" class="text-xs text-gray-400 mt-2 px-6 text-center">
+                            Acceso limitado a 3 tiradas diarias de Tarot.
+                        </p>
+                        <div id="premium-badge" class="hidden mt-4 bg-[#ffd700] text-black font-black px-4 py-1 rounded-full shadow-[0_0_15px_#ffd700]">
+                            VIP MEMBER
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Columna Der: Editor y Accesos -->
+            <div class="space-y-6">
+                <!-- Panel de Edición -->
+                <div id="edit-panel" class="hidden-section bg-[#150520] p-6 rounded-xl border border-purple-500/30">
+                    <h3 class="text-[#ffd700] font-bold mb-4 uppercase text-sm">Editar Perfil</h3>
+                    
+                    <label class="block text-xs text-gray-400 mb-1">Nombre Místico</label>
+                    <input type="text" id="edit-name" class="input-astral mb-3">
+                    
+                    <label class="block text-xs text-gray-400 mb-1">Avatar (URL de Imagen)</label>
+                    <input type="text" id="edit-avatar-url" class="input-astral mb-2" placeholder="https://...">
+                    
+                    <label class="block text-xs text-gray-400 mb-1">Biografía Corta</label>
+                    <textarea id="edit-bio-text" class="input-astral h-20 mb-4"></textarea>
+                    
+                    <button onclick="saveProfile()" class="w-full bg-[#ffd700] text-black font-bold py-2 rounded hover:bg-white transition">GUARDAR CAMBIOS</button>
+                </div>
+
+                <!-- Accesos Rápidos -->
+                <div class="grid grid-cols-2 gap-4">
+                    <a href="index.html" class="bg-black/50 border border-white/10 p-4 rounded-xl flex items-center gap-3 hover:border-[#ffd700] transition group">
+                        <i class="fa-solid fa-house text-purple-400 group-hover:text-[#ffd700]"></i>
+                        <span class="text-sm font-bold text-gray-300">Volver al Inicio</span>
+                    </a>
+                    <a href="Tarot.html" class="bg-black/50 border border-white/10 p-4 rounded-xl flex items-center gap-3 hover:border-[#ffd700] transition group">
+                        <i class="fa-solid fa-layer-group text-purple-400 group-hover:text-[#ffd700]"></i>
+                        <span class="text-sm font-bold text-gray-300">Ir al Tarot</span>
+                    </a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ========================== -->
+    <!-- 3. PANEL DE ADMIN (OCULTO) -->
+    <!-- ========================== -->
+    <div id="admin-modal" class="admin-modal">
+        <div class="admin-content relative">
+            <button onclick="closeAdmin()" class="absolute top-4 right-4 text-gray-500 hover:text-white"><i class="fa-solid fa-xmark text-2xl"></i></button>
+            
+            <h2 class="text-2xl font-black text-[#ffd700] mb-6 uppercase border-b border-white/10 pb-4 flex items-center gap-3">
+                <i class="fa-solid fa-user-secret"></i> Panel de Dios
+            </h2>
+
+            <!-- Buscador -->
+            <input type="text" id="admin-search" onkeyup="searchUsers()" placeholder="Buscar usuario por email..." class="input-astral mb-4 bg-black border-gray-700">
+
+            <!-- Tabla de Usuarios -->
+            <div class="flex-1 overflow-y-auto bg-black/30 rounded-lg border border-white/5 mb-4 custom-scroll">
+                <div class="sticky top-0 bg-[#2a1b3d] p-3 grid grid-cols-[2fr_1fr_1fr] font-bold text-xs text-[#ffd700] uppercase z-10">
+                    <div>Usuario / Email</div>
+                    <div class="text-center">Rango</div>
+                    <div class="text-center">Acción</div>
+                </div>
+                <div id="users-list">
+                    <!-- JS rellena esto -->
+                    <div class="p-4 text-center text-gray-500">Cargando almas...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FIREBASE LOGIC -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
+        import { getAuth, signInWithPopup, GoogleAuthProvider, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged, updateProfile } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js";
+        import { getFirestore, doc, getDoc, setDoc, updateDoc, collection, getDocs, query, where } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyB8EgfX8W3GdhtOnSVpqSnk33DeS-SNV3Y",
+            authDomain: "tarotastral-dc552.firebaseapp.com",
+            projectId: "tarotastral-dc552",
+            storageBucket: "tarotastral-dc552.firebasestorage.app",
+            messagingSenderId: "666976665528",
+            appId: "1:666976665528:web:c2b4c27c3e50b9a953194d"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        const provider = new GoogleAuthProvider();
+
+        let currentUserUid = null;
+        let moonClicks = 0;
+        let allUsersCache = [];
+
+        // --- AUTH CHECK ---
+        onAuthStateChanged(auth, async (user) => {
+            const authContainer = document.getElementById('auth-container');
+            const profileContainer = document.getElementById('profile-container');
+
+            if (user) {
+                // Usuario logueado: Mostrar Perfil
+                currentUserUid = user.uid;
+                authContainer.classList.add('hidden-section');
+                profileContainer.classList.remove('hidden-section');
+                
+                // Cargar datos de Firestore
+                await loadUserProfile(user);
+            } else {
+                // No logueado: Mostrar Login
+                currentUserUid = null;
+                authContainer.classList.remove('hidden-section');
+                profileContainer.classList.add('hidden-section');
+            }
+        });
+
+        // --- FUNCIONES DE LOGIN ---
+        window.googleLogin = async () => {
+            try {
+                const result = await signInWithPopup(auth, provider);
+                const user = result.user;
+                await checkAndCreateUserDoc(user);
+            } catch (error) { alert("Error Google: " + error.message); }
+        };
+
+        window.emailLogin = async () => {
+            const email = document.getElementById('auth-email').value;
+            const pass = document.getElementById('auth-pass').value;
+            try { await signInWithEmailAndPassword(auth, email, pass); } 
+            catch (e) { alert("Error: " + e.message); }
+        };
+
+        window.emailRegister = async () => {
+            const email = document.getElementById('auth-email').value;
+            const pass = document.getElementById('auth-pass').value;
+            try {
+                const res = await createUserWithEmailAndPassword(auth, email, pass);
+                await checkAndCreateUserDoc(res.user);
+            } catch (e) { alert("Error Registro: " + e.message); }
+        };
+
+        window.logout = () => signOut(auth);
+
+        // --- GESTIÓN DE PERFIL ---
+        async function checkAndCreateUserDoc(user) {
+            const userRef = doc(db, "users", user.uid);
+            const snap = await getDoc(userRef);
+            if (!snap.exists()) {
+                await setDoc(userRef, {
+                    username: user.displayName || "Viajero Astral",
+                    email: user.email,
+                    photoURL: user.photoURL || "https://via.placeholder.com/150",
+                    bio: "Explorando el destino...",
+                    isPremium: false,
+                    createdAt: new Date().toISOString()
+                });
+            }
+        }
+
+        async function loadUserProfile(user) {
+            const userRef = doc(db, "users", user.uid);
+            const snap = await getDoc(userRef);
+            
+            if (snap.exists()) {
+                const data = snap.data();
+                
+                // Llenar UI
+                document.getElementById('profile-name').innerText = data.username;
+                document.getElementById('profile-email').innerText = data.email;
+                document.getElementById('profile-avatar').src = data.photoURL;
+                document.getElementById('profile-bio').innerText = data.bio;
+
+                // Llenar campos de edición
+                document.getElementById('edit-name').value = data.username;
+                document.getElementById('edit-avatar-url').value = data.photoURL;
+                document.getElementById('edit-bio-text').value = data.bio;
+
+                // Estado Premium
+                const backStyle = document.getElementById('card-back-style');
+                const rankName = document.getElementById('rank-name');
+                const rankDesc = document.getElementById('rank-desc');
+                const rankIcon = document.getElementById('rank-icon');
+                const badge = document.getElementById('premium-badge');
+
+                if (data.isPremium) {
+                    backStyle.className = "card-face card-back premium";
+                    rankName.innerText = "PREMIUM";
+                    rankName.className = "text-3xl font-black mystic-font uppercase text-[#ffd700] drop-shadow-[0_0_10px_rgba(255,215,0,0.8)]";
+                    rankDesc.innerText = "Acceso TOTAL e ILIMITADO a todas las funciones astrales.";
+                    rankIcon.className = "fa-solid fa-crown text-5xl text-[#ffd700] mb-4 animate-bounce";
+                    badge.classList.remove('hidden');
+                } else {
+                    backStyle.className = "card-face card-back basic";
+                    rankName.innerText = "BÁSICO";
+                    rankName.className = "text-3xl font-black mystic-font uppercase text-gray-400";
+                    rankDesc.innerText = "Acceso limitado a 3 tiradas diarias de Tarot.";
+                    rankIcon.className = "fa-solid fa-user text-5xl text-gray-500 mb-4";
+                    badge.classList.add('hidden');
+                }
+            }
+        }
+
+        window.toggleEdit = () => {
+            const panel = document.getElementById('edit-panel');
+            panel.classList.toggle('hidden-section');
+        };
+
+        window.saveProfile = async () => {
+            if(!currentUserUid) return;
+            const name = document.getElementById('edit-name').value;
+            const avatar = document.getElementById('edit-avatar-url').value;
+            const bio = document.getElementById('edit-bio-text').value;
+            
+            try {
+                await updateDoc(doc(db, "users", currentUserUid), {
+                    username: name, photoURL: avatar, bio: bio
+                });
+                toggleEdit();
+                // Recargar visual
+                loadUserProfile({ uid: currentUserUid });
+                alert("Perfil actualizado");
+            } catch(e) { alert("Error: " + e.message); }
+        };
+
+        // --- ADMIN PANEL ---
+        window.handleMoonClick = () => {
+            moonClicks++;
+            if (moonClicks === 5) {
+                const pass = prompt("🔐 CLAVE MAESTRA REQUERIDA:");
+                if (pass === "#LAU3700#") {
+                    openAdmin();
+                    moonClicks = 0;
+                } else {
+                    alert("Acceso Denegado");
+                    moonClicks = 0;
+                }
+            }
+        };
+
+        function openAdmin() {
+            document.getElementById('admin-modal').style.display = 'flex';
+            loadAllUsers();
+        }
+        window.closeAdmin = () => document.getElementById('admin-modal').style.display = 'none';
+
+        async function loadAllUsers() {
+            const list = document.getElementById('users-list');
+            list.innerHTML = '<div class="text-center text-[#ffd700] py-4">Cargando usuarios...</div>';
+            
+            try {
+                const q = query(collection(db, "users"));
+                const querySnapshot = await getDocs(q);
+                allUsersCache = [];
+                
+                querySnapshot.forEach((doc) => {
+                    allUsersCache.push({ id: doc.id, ...doc.data() });
+                });
+                
+                renderUserList(allUsersCache);
+            } catch (e) { list.innerHTML = "Error cargando usuarios."; }
+        }
+
+        window.searchUsers = () => {
+            const term = document.getElementById('admin-search').value.toLowerCase();
+            const filtered = allUsersCache.filter(u => 
+                (u.email && u.email.toLowerCase().includes(term)) || 
+                (u.username && u.username.toLowerCase().includes(term))
+            );
+            renderUserList(filtered);
+        };
+
+        function renderUserList(users) {
+            const list = document.getElementById('users-list');
+            list.innerHTML = "";
+            
+            if (users.length === 0) { list.innerHTML = '<div class="text-center text-gray-500">No hay resultados.</div>'; return; }
+
+            users.forEach(user => {
+                const isPrem = user.isPremium;
+                const row = document.createElement('div');
+                row.className = "user-row";
+                row.innerHTML = `
+                    <div class="flex items-center gap-2 overflow-hidden">
+                        <img src="${user.photoURL}" class="w-6 h-6 rounded-full border border-gray-600">
+                        <div class="flex flex-col">
+                            <span class="text-white font-bold text-xs truncate">${user.username}</span>
+                            <span class="text-gray-500 text-[10px] truncate">${user.email}</span>
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        ${isPrem 
+                            ? '<span class="text-[#ffd700] font-bold text-xs border border-[#ffd700] px-2 rounded">PREMIUM</span>' 
+                            : '<span class="text-gray-500 text-xs">Básico</span>'}
+                    </div>
+                    <div class="text-center">
+                        <button onclick="togglePremium('${user.id}', ${!isPrem})" 
+                            class="text-xs font-bold px-3 py-1 rounded transition ${isPrem ? 'bg-red-900 text-red-300 hover:bg-red-800' : 'bg-green-900 text-green-300 hover:bg-green-800'}">
+                            ${isPrem ? 'REVOCAR' : 'DAR VIP'}
+                        </button>
+                    </div>
+                `;
+                list.appendChild(row);
+            });
+        }
+
+        window.togglePremium = async (uid, newStatus) => {
+            if(confirm(`¿${newStatus ? 'Dar' : 'Quitar'} Premium a este usuario?`)) {
+                try {
+                    await updateDoc(doc(db, "users", uid), { isPremium: newStatus });
+                    // Actualizar lista localmente sin recargar todo
+                    const userIdx = allUsersCache.findIndex(u => u.id === uid);
+                    if(userIdx !== -1) allUsersCache[userIdx].isPremium = newStatus;
+                    
+                    // Si me edité a mí mismo, recargar mi perfil
+                    if(uid === currentUserUid) loadUserProfile({ uid: currentUserUid });
+                    
+                    // Re-renderizar lista (con el filtro actual si lo hay)
+                    window.searchUsers(); 
+                } catch(e) { alert("Error: " + e.message); }
+            }
+        };
+
+    </script>
+</body>
+</html>
