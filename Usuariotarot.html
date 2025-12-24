@@ -57,7 +57,7 @@
         }
         .input-astral:focus { border-color: var(--mystic-gold); box-shadow: 0 0 10px rgba(255, 215, 0, 0.2); }
 
-        /* --- Tarjeta 3D Perfil --- */
+        /* --- Tarjeta 3D Perfil MEJORADA --- */
         .profile-card-container { perspective: 1000px; width: 300px; height: 450px; margin: 0 auto; cursor: grab; }
         .profile-card {
             width: 100%; height: 100%; position: relative;
@@ -71,29 +71,48 @@
             backface-visibility: hidden; border-radius: 20px;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             box-shadow: 0 0 30px rgba(138, 43, 226, 0.4);
-            border: 2px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
         
         /* Frente: Datos Usuario */
         .card-front {
             background: linear-gradient(135deg, #2e1065, #000000);
             border-bottom: 4px solid var(--mystic-gold);
+            background-image: url("https://www.transparenttextures.com/patterns/stardust.png");
         }
         
         /* Reverso: Membresía */
         .card-back {
-            background: linear-gradient(135deg, #000000, #1a0b2e);
             transform: rotateY(180deg);
+            overflow: hidden;
         }
-        .card-back.premium { border: 2px solid var(--mystic-gold); box-shadow: 0 0 40px rgba(255, 215, 0, 0.4); }
-        .card-back.basic { border: 2px solid #555; }
+        
+        /* Estilo Reverso PREMIUM */
+        .card-back.premium {
+            background: radial-gradient(circle, #422006 0%, #000 100%);
+            border: 3px double #ffd700;
+            box-shadow: 0 0 50px rgba(255, 215, 0, 0.5);
+        }
+        .card-back.premium::before {
+            content: ''; position: absolute; inset: 0;
+            background: linear-gradient(45deg, transparent, rgba(255, 215, 0, 0.1), transparent);
+            animation: shine 3s infinite;
+        }
+        
+        /* Estilo Reverso BÁSICO (Limpio) */
+        .card-back.basic {
+            background: #111;
+            border: 1px solid #333;
+            box-shadow: inset 0 0 20px #000;
+        }
 
         .avatar-glow { box-shadow: 0 0 20px rgba(255, 215, 0, 0.3); }
 
-        /* --- Admin Panel --- */
-        .admin-modal {
+        /* --- Modales (Admin & Success) --- */
+        .admin-modal, .success-modal {
             position: fixed; inset: 0; z-index: 100; background: rgba(0,0,0,0.95);
             display: none; align-items: center; justify-content: center;
+            backdrop-filter: blur(5px);
         }
         .admin-content {
             background: #150520; border: 2px solid var(--mystic-gold);
@@ -102,6 +121,13 @@
             box-shadow: 0 0 50px rgba(255, 215, 0, 0.2);
         }
         
+        .modal-box {
+            background: #1a0b2e; border: 2px solid #22c55e;
+            padding: 2rem; border-radius: 15px; text-align: center;
+            box-shadow: 0 0 50px rgba(34, 197, 94, 0.3);
+            animation: bounceIn 0.4s;
+        }
+
         .user-row {
             display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 10px;
             padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.1);
@@ -114,16 +140,28 @@
         /* Animaciones */
         @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
         .animate-float { animation: float 4s ease-in-out infinite; }
+        @keyframes shine { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
+        @keyframes bounceIn { 0% { transform: scale(0.8); opacity: 0; } 60% { transform: scale(1.1); opacity: 1; } 100% { transform: scale(1); } }
     </style>
 </head>
 <body class="flex flex-col min-h-screen justify-center items-center p-4">
 
     <div class="stars-bg"></div>
 
-    <!-- PRELOADER (Evita ver el login si ya estás logueado) -->
+    <!-- PRELOADER -->
     <div id="auth-loading">
         <div class="spinner"></div>
         <p class="text-[#ffd700] text-xs mt-4 tracking-widest animate-pulse">VERIFICANDO ALMA...</p>
+    </div>
+
+    <!-- MODAL DE ÉXITO (AL GUARDAR) -->
+    <div id="success-modal" class="success-modal">
+        <div class="modal-box">
+            <i class="fa-solid fa-circle-check text-6xl text-green-500 mb-4 animate-pulse"></i>
+            <h3 class="text-2xl font-black text-white uppercase mb-2">Cambio Exitoso</h3>
+            <p class="text-gray-300 text-sm">Tu perfil astral ha sido actualizado.</p>
+            <button onclick="closeSuccessModal()" class="mt-6 bg-green-600 hover:bg-green-500 text-white font-bold py-2 px-8 rounded uppercase text-xs tracking-widest transition">Aceptar</button>
+        </div>
     </div>
 
     <!-- ========================== -->
@@ -137,7 +175,7 @@
             <p class="text-gray-400 text-xs uppercase tracking-widest">Identifícate, Viajero</p>
         </div>
 
-        <!-- Google Login (Recomendado) -->
+        <!-- Google Login -->
         <button onclick="googleLogin()" class="w-full bg-white text-black font-bold py-3 rounded-lg flex items-center justify-center gap-3 mb-6 hover:bg-gray-200 transition shadow-[0_0_15px_rgba(255,255,255,0.3)]">
             <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" class="w-5 h-5">
             Continuar con Google
@@ -172,7 +210,6 @@
         <!-- Header Perfil -->
         <div class="flex justify-between items-center mb-8 bg-[#1a0b2e]/80 p-4 rounded-xl border border-white/10">
             <div class="flex items-center gap-3">
-                <!-- BOTÓN OCULTO LUNA (ADMIN) -->
                 <i class="fa-solid fa-moon text-[#ffd700] text-2xl cursor-pointer hover:scale-110 transition" id="admin-moon" onclick="handleMoonClick()"></i>
                 <h2 class="text-xl font-bold mystic-font text-white">Tu Espacio Sagrado</h2>
             </div>
@@ -188,32 +225,28 @@
                     <!-- FRENTE: DATOS -->
                     <div class="card-face card-front">
                         <div class="relative mb-4">
-                            <img id="profile-avatar" src="" class="w-24 h-24 rounded-full object-cover border-2 border-[#ffd700] avatar-glow">
-                            <button onclick="event.stopPropagation(); toggleEdit()" class="absolute bottom-0 right-0 bg-[#ffd700] text-black w-8 h-8 rounded-full flex items-center justify-center hover:scale-110 transition shadow-lg">
+                            <img id="profile-avatar" src="" class="w-24 h-24 rounded-full object-cover border-2 border-[#ffd700] avatar-glow bg-black">
+                            <button onclick="event.stopPropagation(); toggleEdit()" class="absolute bottom-0 right-0 bg-[#ffd700] text-black w-8 h-8 rounded-full flex items-center justify-center hover:scale-110 transition shadow-lg z-10">
                                 <i class="fa-solid fa-pen"></i>
                             </button>
                         </div>
-                        <h3 id="profile-name" class="text-2xl font-black text-white mystic-font uppercase">Usuario</h3>
-                        <p id="profile-email" class="text-xs text-gray-400 mb-4 font-mono">cargando...</p>
+                        <h3 id="profile-name" class="text-2xl font-black text-white mystic-font uppercase mb-1">Usuario</h3>
+                        <p id="profile-email" class="text-xs text-gray-500 mb-4 font-mono">cargando...</p>
                         
-                        <div class="bg-black/40 p-3 rounded w-3/4 text-center border border-white/5">
+                        <div class="bg-black/40 p-4 rounded-xl w-3/4 text-center border border-white/5 backdrop-blur-sm">
                             <p id="profile-bio" class="text-sm text-gray-300 italic">"Sin biografía definida."</p>
                         </div>
 
-                        <p class="text-[10px] text-[#ffd700] mt-auto mb-4 uppercase tracking-widest animate-pulse">
-                            <i class="fa-solid fa-rotate"></i> Toca para ver Membresía
+                        <p class="text-[10px] text-[#ffd700] mt-auto mb-6 uppercase tracking-widest animate-pulse flex items-center gap-2">
+                            <i class="fa-solid fa-rotate"></i> Ver Rango Astral
                         </p>
                     </div>
 
                     <!-- REVERSO: MEMBRESÍA -->
                     <div class="card-face card-back" id="card-back-style">
-                        <i id="rank-icon" class="fa-solid fa-user text-5xl text-gray-500 mb-4"></i>
-                        <h3 id="rank-name" class="text-3xl font-black mystic-font uppercase text-gray-400">BÁSICO</h3>
-                        <p id="rank-desc" class="text-xs text-gray-400 mt-2 px-6 text-center">
-                            Acceso limitado a 3 tiradas diarias de Tarot.
-                        </p>
-                        <div id="premium-badge" class="hidden mt-4 bg-[#ffd700] text-black font-black px-4 py-1 rounded-full shadow-[0_0_15px_#ffd700]">
-                            VIP MEMBER
+                        <!-- Contenido dinámico según rango -->
+                        <div id="rank-content" class="text-center w-full">
+                            <!-- Se llena con JS -->
                         </div>
                     </div>
 
@@ -223,23 +256,28 @@
             <!-- Columna Der: Editor -->
             <div class="space-y-6">
                 <!-- Panel de Edición -->
-                <div id="edit-panel" class="hidden-section bg-[#150520] p-6 rounded-xl border border-purple-500/30">
-                    <h3 class="text-[#ffd700] font-bold mb-4 uppercase text-sm">Editar Perfil</h3>
+                <div id="edit-panel" class="hidden-section bg-[#150520] p-6 rounded-xl border border-purple-500/30 shadow-lg">
+                    <h3 class="text-[#ffd700] font-bold mb-4 uppercase text-sm border-b border-white/10 pb-2">Editar Perfil</h3>
                     
                     <label class="block text-xs text-gray-400 mb-1">Nombre Místico</label>
                     <input type="text" id="edit-name" class="input-astral mb-3">
                     
-                    <label class="block text-xs text-gray-400 mb-1">Avatar (URL de Imagen)</label>
-                    <input type="text" id="edit-avatar-url" class="input-astral mb-2" placeholder="https://...">
+                    <label class="block text-xs text-gray-400 mb-1">Avatar (Subir Imagen)</label>
+                    <div class="flex gap-2 mb-3">
+                        <input type="file" id="file-upload" accept="image/*" class="text-xs text-gray-400 w-full file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-[#ffd700] file:text-black hover:file:bg-yellow-400">
+                    </div>
+                    <!-- Input oculto para URL directa si se prefiere -->
+                    <input type="hidden" id="edit-avatar-url"> 
                     
                     <label class="block text-xs text-gray-400 mb-1">Biografía Corta</label>
-                    <textarea id="edit-bio-text" class="input-astral h-20 mb-4"></textarea>
+                    <textarea id="edit-bio-text" class="input-astral h-24 mb-4 resize-none"></textarea>
                     
-                    <button onclick="saveProfile()" class="w-full bg-[#ffd700] text-black font-bold py-2 rounded hover:bg-white transition">GUARDAR CAMBIOS</button>
+                    <button onclick="saveProfile()" class="w-full bg-[#ffd700] text-black font-bold py-3 rounded hover:bg-white transition shadow-lg shadow-yellow-500/20 uppercase text-xs tracking-widest">GUARDAR CAMBIOS</button>
                 </div>
                 
-                <!-- Solo información, sin navegación extra innecesaria -->
-                <div class="bg-black/30 border border-white/5 p-4 rounded-xl text-center">
+                <!-- Solo información, sin navegación extra -->
+                <div class="bg-black/30 border border-white/5 p-6 rounded-xl text-center">
+                    <i class="fa-solid fa-infinity text-4xl text-purple-500/50 mb-3 block"></i>
                     <p class="text-gray-500 text-xs italic">
                         "El universo está dentro de ti. Configura tu esencia para alinear tu energía."
                     </p>
@@ -271,7 +309,6 @@
                     <div class="text-center">Acción</div>
                 </div>
                 <div id="users-list">
-                    <!-- JS rellena esto -->
                     <div class="p-4 text-center text-gray-500">Cargando almas...</div>
                 </div>
             </div>
@@ -309,21 +346,21 @@
             const profileContainer = document.getElementById('profile-container');
 
             if (user) {
-                // Usuario logueado: Mostrar Perfil
                 currentUserUid = user.uid;
-                await checkAndCreateUserDoc(user); // Asegurar que el doc existe
+                await checkAndCreateUserDoc(user);
                 
                 authContainer.classList.add('hidden-section');
                 profileContainer.classList.remove('hidden-section');
+                
+                await loadUserProfile(user);
+                
                 loadingScreen.style.opacity = '0';
                 setTimeout(() => loadingScreen.classList.add('hidden-section'), 500);
-
-                await loadUserProfile(user);
             } else {
-                // No logueado: Mostrar Login
                 currentUserUid = null;
                 authContainer.classList.remove('hidden-section');
                 profileContainer.classList.add('hidden-section');
+                
                 loadingScreen.style.opacity = '0';
                 setTimeout(() => loadingScreen.classList.add('hidden-section'), 500);
             }
@@ -334,22 +371,17 @@
             try {
                 const result = await signInWithPopup(auth, provider);
                 const user = result.user;
-                // El onAuthStateChanged se encargará del resto
+                await checkAndCreateUserDoc(user);
             } catch (error) { alert("Error Google: " + error.message); }
         };
 
         window.emailLogin = async () => {
             const email = document.getElementById('auth-email').value;
             const pass = document.getElementById('auth-pass').value;
-            try { 
-                await signInWithEmailAndPassword(auth, email, pass);
-                // Éxito: onAuthStateChanged manejará la UI
-            } catch (e) { 
-                if(e.code === 'auth/invalid-credential' || e.code === 'auth/user-not-found') {
-                    alert("Usuario no encontrado o contraseña incorrecta. Verifica tus datos o regístrate.");
-                } else {
-                    alert("Error: " + e.message); 
-                }
+            try { await signInWithEmailAndPassword(auth, email, pass); } 
+            catch (e) { 
+                if(e.code === 'auth/invalid-credential' || e.code === 'auth/user-not-found') alert("Usuario no encontrado o contraseña incorrecta.");
+                else alert("Error: " + e.message); 
             }
         };
 
@@ -357,12 +389,10 @@
             const email = document.getElementById('auth-email').value;
             const pass = document.getElementById('auth-pass').value;
             if(pass.length < 6) return alert("La contraseña debe tener al menos 6 caracteres.");
-            
             try {
                 const res = await createUserWithEmailAndPassword(auth, email, pass);
-                // Crear documento inmediatamente
                 await checkAndCreateUserDoc(res.user);
-                alert("Cuenta creada con éxito. Bienvenido al Portal.");
+                alert("Cuenta creada con éxito.");
             } catch (e) { 
                 if(e.code === 'auth/email-already-in-use') alert("Este correo ya está registrado.");
                 else alert("Error Registro: " + e.message); 
@@ -386,7 +416,7 @@
                         createdAt: new Date().toISOString()
                     });
                 }
-            } catch(e) { console.error("Error creando doc:", e); }
+            } catch(e) { console.error(e); }
         }
 
         async function loadUserProfile(user) {
@@ -396,38 +426,34 @@
             if (snap.exists()) {
                 const data = snap.data();
                 
-                // Llenar UI
                 document.getElementById('profile-name').innerText = data.username;
                 document.getElementById('profile-email').innerText = data.email;
                 document.getElementById('profile-avatar').src = data.photoURL;
                 document.getElementById('profile-bio').innerText = data.bio;
 
-                // Llenar campos de edición
                 document.getElementById('edit-name').value = data.username;
                 document.getElementById('edit-avatar-url').value = data.photoURL;
                 document.getElementById('edit-bio-text').value = data.bio;
 
-                // Estado Premium
-                const backStyle = document.getElementById('card-back-style');
-                const rankName = document.getElementById('rank-name');
-                const rankDesc = document.getElementById('rank-desc');
-                const rankIcon = document.getElementById('rank-icon');
-                const badge = document.getElementById('premium-badge');
+                // Render Reverso Tarjeta
+                const backFace = document.getElementById('card-back-style');
+                const contentDiv = document.getElementById('rank-content');
 
                 if (data.isPremium) {
-                    backStyle.className = "card-face card-back premium";
-                    rankName.innerText = "PREMIUM";
-                    rankName.className = "text-3xl font-black mystic-font uppercase text-[#ffd700] drop-shadow-[0_0_10px_rgba(255,215,0,0.8)]";
-                    rankDesc.innerText = "Acceso TOTAL e ILIMITADO a todas las funciones astrales.";
-                    rankIcon.className = "fa-solid fa-crown text-5xl text-[#ffd700] mb-4 animate-bounce";
-                    badge.classList.remove('hidden');
+                    backFace.className = "card-face card-back premium";
+                    contentDiv.innerHTML = `
+                        <i class="fa-solid fa-crown text-6xl text-[#ffd700] mb-4 animate-bounce drop-shadow-lg"></i>
+                        <h3 class="text-4xl font-black mystic-font uppercase text-[#ffd700] mb-2 drop-shadow-[0_0_10px_rgba(255,215,0,0.8)]">PREMIUM</h3>
+                        <p class="text-xs text-white font-bold tracking-widest uppercase mb-4">Acceso Total Desbloqueado</p>
+                        <div class="bg-[#ffd700] text-black font-black px-6 py-2 rounded-full shadow-[0_0_20px_#ffd700] text-xs">VIP MEMBER</div>
+                    `;
                 } else {
-                    backStyle.className = "card-face card-back basic";
-                    rankName.innerText = "BÁSICO";
-                    rankName.className = "text-3xl font-black mystic-font uppercase text-gray-400";
-                    rankDesc.innerText = "Acceso limitado a 3 tiradas diarias de Tarot.";
-                    rankIcon.className = "fa-solid fa-user text-5xl text-gray-500 mb-4";
-                    badge.classList.add('hidden');
+                    backFace.className = "card-face card-back basic";
+                    // BÁSICA LIMPIA: Solo icono grande
+                    contentDiv.innerHTML = `
+                        <i class="fa-solid fa-user text-6xl text-gray-600 mb-2"></i>
+                        <h3 class="text-2xl font-black mystic-font uppercase text-gray-500">BÁSICO</h3>
+                    `;
                 }
             }
         }
@@ -436,6 +462,23 @@
             const panel = document.getElementById('edit-panel');
             panel.classList.toggle('hidden-section');
         };
+
+        // --- SUBIDA IMAGEN (FILE READER) ---
+        document.getElementById('file-upload').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                if (file.size > 200000) { // Limit 200kb aprox para evitar sobrecarga
+                    alert("La imagen es muy pesada. Máximo 200KB.");
+                    this.value = "";
+                    return;
+                }
+                const reader = new FileReader();
+                reader.onloadend = function() {
+                    document.getElementById('edit-avatar-url').value = reader.result; // Base64 string
+                }
+                reader.readAsDataURL(file);
+            }
+        });
 
         window.saveProfile = async () => {
             if(!currentUserUid) return;
@@ -448,11 +491,14 @@
                     username: name, photoURL: avatar, bio: bio
                 });
                 toggleEdit();
-                // Recargar visual
-                loadUserProfile({ uid: currentUserUid });
-                alert("Perfil actualizado");
+                await loadUserProfile({ uid: currentUserUid });
+                
+                // Mostrar Panel Exito
+                document.getElementById('success-modal').style.display = 'flex';
             } catch(e) { alert("Error: " + e.message); }
         };
+
+        window.closeSuccessModal = () => document.getElementById('success-modal').style.display = 'none';
 
         // --- ADMIN PANEL ---
         window.handleMoonClick = () => {
@@ -462,10 +508,7 @@
                 if (pass === "#LAU3700#") {
                     openAdmin();
                     moonClicks = 0;
-                } else {
-                    alert("Acceso Denegado");
-                    moonClicks = 0;
-                }
+                } else { alert("Acceso Denegado"); moonClicks = 0; }
             }
         };
 
@@ -478,16 +521,11 @@
         async function loadAllUsers() {
             const list = document.getElementById('users-list');
             list.innerHTML = '<div class="text-center text-[#ffd700] py-4">Cargando usuarios...</div>';
-            
             try {
                 const q = query(collection(db, "users"));
                 const querySnapshot = await getDocs(q);
                 allUsersCache = [];
-                
-                querySnapshot.forEach((doc) => {
-                    allUsersCache.push({ id: doc.id, ...doc.data() });
-                });
-                
+                querySnapshot.forEach((doc) => { allUsersCache.push({ id: doc.id, ...doc.data() }); });
                 renderUserList(allUsersCache);
             } catch (e) { list.innerHTML = "Error cargando usuarios."; }
         }
@@ -504,7 +542,6 @@
         function renderUserList(users) {
             const list = document.getElementById('users-list');
             list.innerHTML = "";
-            
             if (users.length === 0) { list.innerHTML = '<div class="text-center text-gray-500">No hay resultados.</div>'; return; }
 
             users.forEach(user => {
@@ -513,7 +550,7 @@
                 row.className = "user-row";
                 row.innerHTML = `
                     <div class="flex items-center gap-2 overflow-hidden">
-                        <img src="${user.photoURL}" class="w-6 h-6 rounded-full border border-gray-600">
+                        <img src="${user.photoURL}" class="w-6 h-6 rounded-full border border-gray-600 object-cover">
                         <div class="flex flex-col">
                             <span class="text-white font-bold text-xs truncate">${user.username}</span>
                             <span class="text-gray-500 text-[10px] truncate">${user.email}</span>
@@ -546,7 +583,6 @@
                 } catch(e) { alert("Error: " + e.message); }
             }
         };
-
     </script>
 </body>
 </html>
