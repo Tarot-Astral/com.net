@@ -54,24 +54,34 @@
         .hide-scroll::-webkit-scrollbar { display: none; }
         .hide-scroll { -ms-overflow-style: none; scrollbar-width: none; }
 
-        /* --- Menú Inferior --- */
+        /* --- Menú Inferior (ASTRA DESIGN) --- */
         .bottom-nav {
-            background: rgba(26, 11, 46, 0.95); backdrop-filter: blur(10px);
-            border-top: 1px solid rgba(255, 215, 0, 0.3);
-            box-shadow: 0 -5px 20px rgba(138, 43, 226, 0.2);
+            background: rgba(15, 5, 24, 0.85); /* Más oscuro y transparente */
+            backdrop-filter: blur(15px); /* Más blur */
+            border-top: 1px solid rgba(255, 215, 0, 0.2);
+            box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.8);
         }
         .nav-item {
-            position: relative; transition: all 0.3s; color: #a78bfa; opacity: 0.8; transform: scale(1);
+            position: relative; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            color: #8b5cf6; opacity: 0.7; transform: scale(1);
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
         }
-        .nav-item:hover { color: white; transform: translateY(-2px); text-shadow: 0 0 8px rgba(255, 255, 255, 0.5); }
+        .nav-item i { transition: transform 0.3s; filter: drop-shadow(0 0 0 transparent); }
+        
+        .nav-item:hover { color: white; opacity: 1; }
+        
         .nav-item.active {
-            color: var(--mystic-gold); opacity: 1; transform: translateY(-5px) scale(1.1);
-            text-shadow: 0 0 10px var(--mystic-gold);
+            color: var(--mystic-gold); opacity: 1; transform: translateY(-8px);
         }
+        .nav-item.active i {
+            transform: scale(1.2);
+            filter: drop-shadow(0 0 8px var(--mystic-gold));
+        }
+        /* Luz inferior en activo */
         .nav-item.active::after {
-            content: ''; position: absolute; bottom: -5px; left: 50%; transform: translateX(-50%);
-            width: 6px; height: 6px; background: var(--mystic-gold); border-radius: 50%;
-            box-shadow: 0 0 10px var(--mystic-gold);
+            content: ''; position: absolute; bottom: -12px; left: 50%; transform: translateX(-50%);
+            width: 20px; height: 20px; background: radial-gradient(circle, var(--mystic-gold) 0%, transparent 70%);
+            opacity: 0.6; pointer-events: none;
         }
 
         /* --- Iframe Visor --- */
@@ -111,7 +121,7 @@
             font-family: 'Cinzel', serif; color: #fff; text-shadow: 0 2px 4px rgba(0,0,0,0.5); font-size: 0.95rem; line-height: 1.6;
         }
 
-        /* --- HECHICERÍA CARDS (MEJORADAS) --- */
+        /* --- HECHICERÍA CARDS --- */
         .witch-card-container {
             min-width: 320px; max-width: 350px; scroll-snap-align: center; perspective: 1000px;
         }
@@ -246,11 +256,21 @@
             box-shadow: 0 -20px 60px rgba(0,0,0,0.8);
         }
         .gold-badge {
-            background: linear-gradient(45deg, #FFD700, #FDB931, #FFD700); color: black; font-weight: 900;
-            padding: 6px 18px; border-radius: 30px; font-size: 0.75rem; text-transform: uppercase;
-            letter-spacing: 1px; box-shadow: 0 0 20px rgba(255, 215, 0, 0.4); display: inline-block; margin: 5px;
-            animation: shine 4s infinite; border: 1px solid #fff;
+            background: linear-gradient(135deg, #FFD700 0%, #FDB931 50%, #996515 100%);
+            color: #1a0b2e; font-weight: 900;
+            padding: 8px 20px; border-radius: 4px; font-size: 0.75rem; text-transform: uppercase;
+            letter-spacing: 1px; box-shadow: 0 0 20px rgba(255, 215, 0, 0.3); display: inline-flex; 
+            align-items: center; gap: 8px; margin: 5px;
+            border: 2px solid #fff; position: relative; overflow: hidden;
         }
+        /* Efecto brillo metálico */
+        .gold-badge::before {
+            content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.8), transparent);
+            transform: rotate(45deg); animation: shimmer 3s infinite; pointer-events: none;
+        }
+        @keyframes shimmer { 0% { transform: translateX(-100%) rotate(45deg); } 100% { transform: translateX(100%) rotate(45deg); } }
+        
         .social-link {
             display: flex; align-items: center; justify-content: center; gap: 15px;
             background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1);
@@ -258,6 +278,10 @@
             width: 100%; max-width: 320px; margin: 12px auto;
         }
         .social-link:hover { transform: scale(1.05) translateZ(10px); background: rgba(255,255,255,0.1); }
+        
+        /* Animación flecha hechicería */
+        @keyframes bounceX { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(10px); } }
+        .animate-bounce-x { animation: bounceX 1.5s infinite; }
 
     </style>
 </head>
@@ -397,11 +421,17 @@
 
             <!-- 3. SECRETOS DE LA HECHICERÍA -->
             <div class="mt-20">
-                <div class="flex items-center gap-3 mb-8 justify-center md:justify-start">
+                <div class="flex items-center gap-3 mb-2 justify-center md:justify-start">
                     <div class="w-1 h-10 bg-purple-500 shadow-[0_0_15px_#d946ef]"></div>
                     <h2 class="text-3xl font-bold mystic-font text-white tracking-widest">
                         Secretos de <span class="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-500">Hechicería</span>
                     </h2>
+                </div>
+                
+                <!-- Indicador de Scroll -->
+                <div class="flex justify-center md:justify-start items-center mb-8 animate-pulse gap-2">
+                    <span class="text-[#ffd700] text-[10px] uppercase tracking-widest font-bold">Deslice hacia la derecha la carta para ver más ofertas</span>
+                    <i class="fa-solid fa-arrow-right-long text-[#ffd700] text-lg animate-bounce-x"></i>
                 </div>
                 
                 <div class="cards-slider hide-scroll">
@@ -413,7 +443,7 @@
                                 <div>
                                     <h4 class="text-[#d946ef] font-bold uppercase text-sm mb-2 tracking-wide">Amarres de Amor</h4>
                                     <p class="text-gray-400 text-xs leading-relaxed mb-4 text-justify">
-                                        Rituales de alta vibración para armonizar parejas, endulzar relaciones y atraer el amor verdadero. Se utilizan velas rojas consagradas, miel y fotografía del ser amado. Busca armonizar la vibración de pareja y endulzar el carácter. Advertencia: El karma es real, úsalo con intenciones puras y amor verdadero, nunca para forzar.
+                                        Rituales de alta vibración para armonizar parejas, endulzar relaciones y atraer el amor verdadero respetando el libre albedrío universal.
                                     </p>
                                 </div>
                                 <div class="price-tag text-center py-2 border-t border-white/10 text-sm">$5 USD / $5.000 ARS</div>
@@ -431,7 +461,7 @@
                                 <div>
                                     <h4 class="text-blue-400 font-bold uppercase text-sm mb-2 tracking-wide">Limpieza Energética</h4>
                                     <p class="text-gray-400 text-xs leading-relaxed mb-4 text-justify">
-                                        Despojo profundo de cargas negativas en el aura y espacios físicos. Utiliza sahumerios de salvia blanca, ruda y palo santo, combinados con baños de sal marina y frecuencias de 432Hz. Ideal para romper rachas de mala suerte, envidias y bloqueos económicos. Restaura tu brillo vital.
+                                        Purificación profunda de aura y espacios. Eliminación de bloqueos, mal de ojo y cargas negativas mediante frecuencias y elementos naturales.
                                     </p>
                                 </div>
                                 <div class="price-tag text-center py-2 border-t border-white/10 text-sm">$5 USD / $5.000 ARS</div>
@@ -449,7 +479,7 @@
                                 <div>
                                     <h4 class="text-white font-bold uppercase text-sm mb-2 tracking-wide">Escudos de Poder</h4>
                                     <p class="text-gray-400 text-xs leading-relaxed mb-4 text-justify">
-                                        Creación y consagración de talismanes personales (Ojo Turco, Pentáculo, Cruz de Caravaca). Establece una barrera psíquica impenetrable alrededor de tu campo áurico. Perfecto para personas expuestas al público o ambientes tóxicos. Repele el vampirismo energético y ataques astrales.
+                                        Creación de barreras psíquicas impenetrables y consagración de talismanes antiguos para repeler envidias y negatividad.
                                     </p>
                                 </div>
                                 <div class="price-tag text-center py-2 border-t border-white/10 text-sm">$5 USD / $5.000 ARS</div>
@@ -467,7 +497,7 @@
                                 <div>
                                     <h4 class="text-red-500 font-bold uppercase text-sm mb-2 tracking-wide">Rituales de Pasión</h4>
                                     <p class="text-gray-400 text-xs leading-relaxed mb-4 text-justify">
-                                        Potenciación extrema del magnetismo personal, carisma y atracción sexual. Mediante aceites esenciales de feromonas, velas rojas y rosas, y mantras de atracción. Aumenta tu confianza y conviértete en un imán de miradas. Ideal para reavivar la llama en relaciones frías o atraer nuevas aventuras.
+                                        Potenciación extrema del magnetismo personal, carisma y atracción sexual. Despierta tu fuego interno y atrae miradas.
                                     </p>
                                 </div>
                                 <div class="price-tag text-center py-2 border-t border-white/10 text-sm">$5 USD / $5.000 ARS</div>
@@ -652,9 +682,9 @@
         // --- GLOBAL DEFAULT PROMPTS ---
         window.defaultCardPrompt = "Eres un oráculo místico antiguo y sabio. Tu tarea es generar 5 predicciones de tarot ÚNICAS, profundas y misteriosas para el día de hoy. Enfócate en el destino, el amor, la carrera y los cambios espirituales inesperados. Evita frases genéricas como 'tendrás un buen día'. Sé específico y enigmático. IMPORTANTE: Sepáralas con el símbolo '|'. No uses comillas, ni números, ni introducciones. Solo las 5 frases en texto plano en español. Ejemplo: 'La torre cae para revelar una verdad oculta.|El ermitaño sugiere soledad productiva.|El as de copas trae un nuevo amor.'";
         
-        window.defaultMoonPrompt = "La luna está en su fase actual. Actúa como un astrólogo experto. Dame un consejo espiritual específico, místico y útil para hoy basado en esta energía lunar.";
+        window.defaultMoonPrompt = "La luna está en su fase actual. Actúa como un astrólogo experto. Dame un consejo espiritual específico, místico y útil para hoy basado en esta energía lunar. NO INCLUYAS NÚMEROS.";
         
-        window.defaultNumbersPrompt = "Genera 5 números de la suerte (0-99) aleatorios y místicos separados por comas. Solo los números.";
+        window.defaultNumbersPrompt = "Genera 5 números de la suerte (0-999) aleatorios y místicos separados por comas. Solo los números.";
 
         window.defaultAstraPrompt = "Eres 'Astra', la guardiana del Portal Místico ComicVerse. Tu personalidad es etérea, sabia, misteriosa y un poco Otaku. Tu misión es guiar a los usuarios. Explica las secciones: TAROT, HORÓSCOPO, COMPATIBILIDAD, NUMEROLOGÍA, SUEÑOS y BOLA 8. Si te piden lecturas de cartas o predicciones personales, diles amablemente que no tienes ese poder y que deben contactar al Creador o usar el servicio Premium. Nunca inventes lecturas ni predicciones. Sé servicial y usa emojis místicos.";
 
@@ -703,7 +733,7 @@
                     const resCards = await fetch(`https://text.pollinations.ai/${encodeURIComponent(cardP)}?t=${ts}a`);
                     const textCards = await resCards.text();
                     
-                    // 2. Fetch Luna Advice
+                    // 2. Fetch Luna Advice (Sin números en el prompt)
                     let moonP = customMoonP || window.defaultMoonPrompt;
                     moonP = moonP.replace("fase actual", `fase ${moonPhase.name}`);
                     const resMoon = await fetch(`https://text.pollinations.ai/${encodeURIComponent(moonP)}?t=${ts}b`);
@@ -728,7 +758,7 @@
                         moon: {
                             phase: moonPhase.name,
                             phaseIdx: moonPhase.index,
-                            advice: textMoonAdvice.trim(),
+                            advice: textMoonAdvice.trim(), // Solo el consejo
                             numbers: nums
                         },
                         prompts: {
