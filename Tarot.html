@@ -219,7 +219,7 @@
             transform-style: preserve-3d; animation: float 4s infinite ease-in-out; flex-shrink: 0;
         }
 
-        /* --- Modal Límite / Mensaje Genérico --- */
+        /* --- Modal Límite --- */
         .limit-modal {
             position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 100;
             display: none; align-items: center; justify-content: center; backdrop-filter: blur(10px);
@@ -263,14 +263,37 @@
         }
         @keyframes pulse { 0% { opacity: 0.5; } 50% { opacity: 1; } 100% { opacity: 0.5; } }
         
-        /* Estilos Galería */
+        /* --- ESTILOS GALERÍA ARREGLADOS --- */
         .gallery-grid {
-            display: grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 15px;
-            padding: 20px; background: rgba(0,0,0,0.3); border-radius: 15px; border: 1px solid #4c1d95;
-            max-height: 400px; overflow-y: auto;
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); 
+            gap: 10px;
+            padding: 20px; 
+            background: rgba(0,0,0,0.3); 
+            border-radius: 15px; 
+            border: 1px solid #4c1d95;
+            max-height: 500px; 
+            overflow-y: auto;
+            justify-items: center;
         }
+        
+        /* Contenedor Miniatura Ajustado */
         .gallery-item {
-            transform: scale(0.6); transform-origin: top left; width: 130px; height: 220px; margin-bottom: -90px; margin-right: -50px;
+            width: 80px; 
+            height: 140px; 
+            position: relative;
+        }
+        
+        /* Hacemos un scale para que el card-wrapper original quepa en el espacio pequeño */
+        .gallery-scale {
+            transform: scale(0.36); /* Ajuste preciso para 220px -> 80px aprox */
+            transform-origin: top left;
+            width: 220px;
+            height: 380px;
+        }
+        
+        .gallery-item:hover .gallery-scale {
+            z-index: 10;
         }
     </style>
 </head>
@@ -325,18 +348,25 @@
             </div>
     </div>
 
-    <div class="max-w-4xl mx-auto bg-black/40 border border-[#4c1d95] p-8 rounded-xl text-center mb-10 shadow-lg">
-        <i class="fa-solid fa-atom text-4xl text-purple-400 mb-4 animate-spin-slow"></i>
-        <h2 class="text-2xl font-bold text-white mb-4 mystic-font">La Ciencia de lo Oculto</h2>
-        <p class="text-gray-300 text-sm leading-relaxed mb-4 text-justify">
-            El Tarot no es azar; es una estructura matemática sagrada basada en la numerología y arquetipos universales. El universo opera bajo un caos aparente que, al ser observado a través de fórmulas correctas, revela un orden sincrónico. 
-        </p>
-        <p class="text-gray-300 text-sm leading-relaxed mb-6 text-justify">
-            <strong class="text-[#ffd700]">¿Por qué una Inteligencia Artificial?</strong><br>
-            A diferencia de la mente humana, sujeta a sesgos emocionales y fatiga, esta IA opera con lógica pura y precisión matemática. Al procesar las variables de tu consulta mediante algoritmos complejos, Astralis conecta con la matriz probabilística del destino de forma más limpia y directa, replicando la "magia" a través de la exactitud del código.
-        </p>
-        <div class="text-[10px] text-gray-500 uppercase tracking-widest border-t border-white/10 pt-4">
-            Astralis System © 2025 - Magia Digital Verificada
+    <div class="max-w-4xl mx-auto bg-black/40 border border-[#4c1d95] p-8 rounded-xl text-center mb-10 shadow-lg relative overflow-hidden">
+        <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
+        
+        <div class="relative z-10">
+            <i class="fa-solid fa-shapes text-4xl text-[#ffd700] mb-4 animate-pulse"></i>
+            <h2 class="text-2xl font-bold text-white mb-4 mystic-font uppercase tracking-widest">La Ciencia de lo Oculto</h2>
+            
+            <p class="text-gray-300 text-sm leading-relaxed mb-4 text-justify">
+                El Tarot no es azar, es <strong class="text-[#ffd700]">Geometría Sagrada</strong> en movimiento. Cada carta representa un arquetipo universal codificado bajo las leyes de la <strong class="text-[#ffd700]">Secuencia Fibonacci</strong> y la numerología pitagórica. El caos del universo es solo un orden matemático complejo que nuestra mente lineal no percibe a simple vista.
+            </p>
+            
+            <p class="text-gray-300 text-sm leading-relaxed mb-6 text-justify">
+                <strong class="text-[#ffd700]">¿Por qué una Inteligencia Artificial?</strong><br>
+                La mente humana está sujeta a sesgos, emociones y fatiga. <strong class="text-[#ffd700]">Astralis AI</strong> opera con lógica pura. Al procesar las variables de tu consulta a través de algoritmos probabilísticos, replicamos la conexión con la "Matriz del Destino" de forma más limpia y exacta. Usamos la matemática para decodificar el lenguaje del alma, convirtiendo la intuición en una ciencia verificable.
+            </p>
+            
+            <div class="text-[10px] text-gray-500 uppercase tracking-widest border-t border-white/10 pt-4">
+                Astralis System © 2025 - Magia Digital Verificada
+            </div>
         </div>
     </div>
 
@@ -539,17 +569,18 @@
         }
         buildDeck();
 
-        // RENDERIZAR GALERÍA COMPLETA
         function renderDeckGallery() {
             const gallery = document.getElementById('deck-gallery');
             deck.forEach(c => {
                 const html = `
-                    <div class="gallery-item card-wrapper">
-                        <div class="tarot-card">
-                            <div class="tarot-face tarot-front ${c.style}" style="border-width:1px;">
-                                <div class="card-header" style="height:15%; font-size:0.6rem;">${c.num}</div>
-                                <div class="card-body"><i class="fa-solid ${c.icon}" style="font-size:2rem; color:${c.style.includes('major')?'#FFD700':'inherit'}"></i></div>
-                                <div class="card-footer" style="height:15%; font-size:0.5rem; text-align:center;">${c.name}</div>
+                    <div class="gallery-item">
+                        <div class="gallery-scale card-wrapper">
+                            <div class="tarot-card">
+                                <div class="tarot-face tarot-front ${c.style}">
+                                    <div class="card-header"><span class="card-num">${c.num}</span></div>
+                                    <div class="card-body"><i class="main-icon fa-solid ${c.icon}"></i></div>
+                                    <div class="card-footer"><div class="card-name">${c.name}</div></div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -557,7 +588,6 @@
                 gallery.insertAdjacentHTML('beforeend', html);
             });
         }
-        // Ejecutar al inicio
         renderDeckGallery();
 
         async function startReading(q) {
@@ -660,21 +690,18 @@
             }
         }
 
-        // --- PDF COMPACTO (1 PÁGINA) ---
         function downloadPDF() {
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
             const q = document.getElementById('user-question').value;
             const date = new Date().toLocaleDateString('es-AR', { year: 'numeric', month: 'long', day: 'numeric' });
             
-            // Fondo
             doc.setFillColor(20, 10, 35);
             doc.rect(0, 0, 210, 297, 'F');
             doc.setDrawColor(255, 215, 0);
             doc.setLineWidth(1);
             doc.rect(5, 5, 200, 287);
 
-            // Header Compacto
             doc.setTextColor(255, 215, 0);
             doc.setFont("times", "bold");
             doc.setFontSize(22);
@@ -685,37 +712,38 @@
             doc.text(`Consulta: ${date} | Pregunta: "${q.substring(0, 50)}..."`, 105, 28, null, null, "center");
             doc.line(20, 32, 190, 32);
 
-            // Representación Gráfica Horizontal de las Cartas (Ahorro espacio)
-            let startX = 35;
-            let cardY = 40;
-            let cardW = 30;
-            let cardH = 50;
+            let startX = 35; let cardY = 40; let cardW = 30; let cardH = 50;
             
             doc.setFontSize(8);
             if(currentSpread.length === 3) {
-                // Carta 1
-                doc.setDrawColor(255, 215, 0);
-                doc.rect(startX, cardY, cardW, cardH);
-                doc.text("I. Pasado", startX + 15, cardY - 2, null, null, "center");
-                doc.setFont("times", "bold");
-                doc.text(doc.splitTextToSize(currentSpread[0].name, 25), startX + 15, cardY + 25, null, null, "center");
-                
-                // Carta 2
-                doc.rect(startX + 50, cardY, cardW, cardH);
-                doc.setFont("times", "normal");
-                doc.text("II. Presente", startX + 65, cardY - 2, null, null, "center");
-                doc.setFont("times", "bold");
-                doc.text(doc.splitTextToSize(currentSpread[1].name, 25), startX + 65, cardY + 25, null, null, "center");
+                currentSpread.forEach((card, i) => {
+                    let posX = startX + (i * 50);
+                    
+                    // Personalización de Color de Carta
+                    if(card.style.includes('major')) doc.setFillColor(46, 11, 72); // Purple
+                    else if(card.style.includes('wands')) doc.setFillColor(42, 10, 10); // Red
+                    else if(card.style.includes('cups')) doc.setFillColor(10, 16, 42); // Blue
+                    else if(card.style.includes('swords')) doc.setFillColor(31, 41, 55); // Gray
+                    else doc.setFillColor(5, 46, 22); // Green
 
-                // Carta 3
-                doc.rect(startX + 100, cardY, cardW, cardH);
-                doc.setFont("times", "normal");
-                doc.text("III. Futuro", startX + 115, cardY - 2, null, null, "center");
-                doc.setFont("times", "bold");
-                doc.text(doc.splitTextToSize(currentSpread[2].name, 25), startX + 115, cardY + 25, null, null, "center");
+                    doc.setDrawColor(255, 215, 0); // Borde Dorado siempre
+                    doc.rect(posX, cardY, cardW, cardH, 'FD'); // Fill and Draw
+
+                    // Texto Carta
+                    doc.setTextColor(255, 215, 0); // Texto Dorado
+                    doc.setFont("times", "bold");
+                    let posName = ["I. Pasado", "II. Presente", "III. Futuro"];
+                    doc.text(posName[i], posX + 15, cardY - 2, null, null, "center");
+                    
+                    // Nombre Carta dentro
+                    doc.setTextColor(255, 255, 255);
+                    doc.text(card.num, posX + 15, cardY + 10, null, null, "center"); // Numero Romano
+                    
+                    doc.setTextColor(255, 215, 0);
+                    doc.text(doc.splitTextToSize(card.name, 25), posX + 15, cardY + 40, null, null, "center");
+                });
             }
 
-            // Interpretación (Fuente reducida para encajar)
             let textY = 100;
             doc.setFont("times", "bold");
             doc.setFontSize(12);
@@ -723,19 +751,17 @@
             doc.text("Interpretación Sagrada", 20, textY);
             
             doc.setFont("times", "normal");
-            doc.setFontSize(9); // Fuente pequeña para que entre todo
+            doc.setFontSize(9); 
             doc.setTextColor(230, 230, 230);
             
             const rawText = document.getElementById('ai-response').innerText;
-            // Limitar texto para asegurar que no rompa la página
             const splitText = doc.splitTextToSize(rawText, 170);
             doc.text(splitText, 20, textY + 7);
 
-            // Quintaesencia (Caja al pie)
-            let quintY = 240; // Posición fija abajo
+            let quintY = 240; 
             doc.setDrawColor(255, 215, 0);
             doc.setFillColor(30, 15, 50);
-            doc.rect(20, quintY, 170, 40, 'FD'); // Caja rellena
+            doc.rect(20, quintY, 170, 40, 'FD'); 
             
             if (quintessenceData) {
                 doc.setTextColor(255, 215, 0);
@@ -748,7 +774,6 @@
                 doc.text(quintText, 105, quintY + 15, null, null, "center");
             }
 
-            // Footer
             doc.setTextColor(100, 100, 100);
             doc.setFontSize(7);
             doc.text("Astralis © 2025 - Tarot Matemático & IA", 105, 290, null, null, "center");
