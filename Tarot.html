@@ -14,6 +14,7 @@
             --deep-purple: #1a0b2e;
             --card-back: #2d1b4e;
             --mystic-gold: #ffd700;
+            --mystic-silver: #c0c0c0;
         }
 
         body {
@@ -41,7 +42,6 @@
             outline: none; border-color: var(--mystic-gold);
             box-shadow: 0 0 30px rgba(255, 215, 0, 0.3); background: rgba(0, 0, 0, 0.8);
         }
-        .astral-input::placeholder { color: rgba(255, 255, 255, 0.3); font-style: italic; }
 
         /* --- Botón Mágico --- */
         .magic-btn {
@@ -55,81 +55,130 @@
             transform: scale(1.05) translateY(-2px); box-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
             background: linear-gradient(135deg, #5b21b6, #4c1d95);
         }
-        .magic-btn::after {
-            content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
-            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.2), transparent);
-            transform: rotate(45deg); animation: shimmer 3s infinite;
-        }
-        @keyframes shimmer { 0% { transform: translateX(-100%) rotate(45deg); } 100% { transform: translateX(100%) rotate(45deg); } }
+        .magic-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
 
         /* --- Mesa de Cartas --- */
         .tarot-table {
-            display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;
+            display: flex; justify-content: center; gap: 30px; flex-wrap: wrap;
             margin-top: 3rem; perspective: 1500px; min-height: 450px;
         }
-        .card-wrapper { width: 220px; height: 380px; position: relative; transform-style: preserve-3d; }
-        .tarot-card {
-            width: 100%; height: 100%; position: relative; transform-style: preserve-3d;
-            transition: transform 1s cubic-bezier(0.175, 0.885, 0.32, 1.275); cursor: pointer;
-            border-radius: 12px; box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+        
+        .card-wrapper {
+            width: 240px; height: 400px; 
+            position: relative;
+            transform-style: preserve-3d;
         }
-        .card-wrapper:hover .tarot-card { transform: translateY(-15px) rotateX(5deg); }
+
+        .tarot-card {
+            width: 100%; height: 100%; position: relative;
+            transform-style: preserve-3d;
+            transition: transform 1s cubic-bezier(0.175, 0.885, 0.32, 1.275); cursor: pointer;
+            border-radius: 16px; 
+            /* Sombra profunda para efecto 3D */
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+        }
+
+        .card-wrapper:hover .tarot-card { transform: translateY(-20px) rotateX(10deg); }
         .tarot-card.flipped { transform: rotateY(180deg); }
 
-        /* --- DISEÑO DE CARTAS RIDER-WAITE STYLE --- */
+        /* --- DISEÑO DE CARTAS ASTRALIS (Insp. UsuarioTarot) --- */
         .tarot-face {
             position: absolute; width: 100%; height: 100%; backface-visibility: hidden;
-            border-radius: 12px; overflow: hidden; box-shadow: inset 0 0 10px rgba(0,0,0,0.8);
+            border-radius: 16px; overflow: hidden; 
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.9);
         }
 
-        /* Reverso */
-        .tarot-back {
-            background: repeating-linear-gradient(45deg, #1a0b2e, #1a0b2e 10px, #251042 10px, #251042 20px);
-            border: 4px solid #432c7a; display: flex; align-items: center; justify-content: center;
+        /* REVERSO: ARCANOS MAYORES (Oro y Púrpura) */
+        .back-major {
+            background: radial-gradient(circle, #4c1d95 0%, #1a0b2e 100%);
+            border: 4px double var(--mystic-gold);
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
         }
-        .tarot-back::after {
-            content: '✦'; font-size: 4rem; color: #ffd700; filter: drop-shadow(0 0 10px #ffd700);
-            animation: pulse 3s infinite;
-        }
-
-        /* Frente (Estilo Rider-Waite Mejorado) */
-        .rw-style {
-            background: #eaddcf; border: 6px solid #222;
-            display: flex; flex-direction: column; color: #111;
-        }
-        .rw-inner-border {
-            border: 2px solid #b49b56; margin: 4px; flex: 1; display: flex; flex-direction: column;
-            background: linear-gradient(to bottom, #fff5e6, #e6dace);
-        }
-        .rw-image-container {
-            flex: 1; overflow: hidden; position: relative; border-bottom: 2px solid #222;
-        }
-        .rw-image {
-            width: 100%; height: 100%; object-fit: cover; filter: sepia(0.3) contrast(1.1);
-        }
-        .rw-label-box {
-            height: 40px; display: flex; flex-direction: column; align-items: center; justify-content: center;
-            background: #fff; border-top: 1px solid #b49b56;
-        }
-        .rw-number {
-            font-family: 'Cinzel', serif; font-weight: 900; font-size: 0.8rem; letter-spacing: 2px;
-            color: #333; margin-bottom: -2px;
-        }
-        .rw-name {
-            font-family: 'Cinzel', serif; font-weight: bold; font-size: 0.7rem; text-transform: uppercase;
-            color: #000; letter-spacing: 1px;
+        .back-major::after {
+            content: '☀'; font-size: 5rem; color: var(--mystic-gold); 
+            filter: drop-shadow(0 0 15px var(--mystic-gold));
+            animation: pulse-gold 3s infinite;
         }
         
+        /* REVERSO: ARCANOS MENORES (Plata y Azul Noche) */
+        .back-minor {
+            background: radial-gradient(circle, #1e3a8a 0%, #0f172a 100%);
+            border: 4px double var(--mystic-silver);
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+        }
+        .back-minor::after {
+            content: '☾'; font-size: 5rem; color: var(--mystic-silver);
+            filter: drop-shadow(0 0 15px var(--mystic-silver));
+            animation: pulse-silver 3s infinite;
+        }
+
+        .back-brand {
+            margin-top: 15px; font-family: 'Cinzel', serif; font-weight: 900; 
+            letter-spacing: 4px; font-size: 0.7rem; opacity: 0.6;
+        }
+        .back-major .back-brand { color: var(--mystic-gold); }
+        .back-minor .back-brand { color: var(--mystic-silver); }
+
+
+        /* FRENTE: ESTILO RIDER-WAITE PERSONALIZADO */
+        .front-style {
+            transform: rotateY(180deg);
+            background: #1a1510; /* Papel oscuro antiguo */
+            border: 2px solid #b49b56;
+            display: flex; flex-direction: column;
+            padding: 10px;
+        }
+
+        .rw-content {
+            border: 1px solid #b49b56;
+            height: 100%; width: 100%;
+            display: flex; flex-direction: column;
+            background: linear-gradient(to bottom, #2c241b, #1a1510);
+            position: relative;
+        }
+
+        .rw-header {
+            height: 40px; border-bottom: 1px solid #b49b56;
+            display: flex; align-items: center; justify-content: center;
+            background: rgba(180, 155, 86, 0.1);
+        }
+        .rw-roman {
+            font-family: 'Cinzel', serif; color: #eaddcf; font-weight: bold; letter-spacing: 2px;
+        }
+
+        .rw-image-container {
+            flex: 1; overflow: hidden; position: relative;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .rw-image {
+            width: 100%; height: 100%; object-fit: cover;
+            filter: sepia(0.4) contrast(1.2) brightness(0.9);
+            transition: 0.5s;
+        }
+        .tarot-card:hover .rw-image { filter: sepia(0) contrast(1.1) brightness(1.1); transform: scale(1.05); }
+
+        .rw-footer {
+            height: 50px; border-top: 1px solid #b49b56;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            background: rgba(180, 155, 86, 0.1);
+        }
+        .rw-name {
+            font-family: 'Cinzel', serif; color: #ffd700; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px;
+        }
+        .rw-logo {
+            font-size: 0.5rem; color: rgba(255,255,255,0.3); margin-top: 2px; letter-spacing: 2px;
+        }
+
         /* Etiquetas de posición */
         .card-label {
-            text-align: center; margin-top: 15px; font-size: 0.9rem;
+            text-align: center; margin-top: 20px; font-size: 0.9rem;
             color: var(--mystic-gold); font-weight: bold; text-transform: uppercase;
             opacity: 0; transition: opacity 1s; letter-spacing: 2px;
             text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
         }
         .show-label .card-label { opacity: 1; }
 
-        /* --- Resultado IA (Panel Místico Mejorado) --- */
+        /* --- Resultado IA --- */
         .oracle-box {
             background: rgba(10, 5, 20, 0.95); border: 1px solid var(--mystic-gold);
             border-radius: 16px; padding: 2rem; margin-top: 3rem; max-width: 800px;
@@ -138,40 +187,29 @@
         }
         .oracle-text { color: #e0e0e0; line-height: 1.8; font-size: 1rem; text-align: justify; white-space: pre-wrap; }
 
-        /* --- ESTILOS RESPUESTA IA --- */
-        .card-mention {
-            color: #FFD700; font-weight: 900; text-transform: uppercase;
-            text-shadow: 0 0 15px rgba(255, 215, 0, 0.6);
-            border-bottom: 1px dotted #FFD700;
-        }
-        .conclusion-box {
-            margin-top: 25px; padding: 20px;
-            background: rgba(45, 0, 60, 0.5);
-            border-left: 4px solid #d946ef;
-            border-radius: 0 10px 10px 0;
-            color: #f0abfc; font-weight: bold;
-            box-shadow: 0 0 20px rgba(217, 70, 239, 0.2);
+        /* Estilos Respuesta IA */
+        .card-mention { color: #FFD700; font-weight: 900; text-transform: uppercase; text-shadow: 0 0 10px #FFD700; }
+        .conclusion-box { 
+            margin-top: 20px; padding: 15px; border-left: 4px solid #d946ef; 
+            background: rgba(217, 70, 239, 0.1); color: #f0abfc; font-weight: bold;
             animation: pulse-purple 3s infinite alternate;
         }
-        @keyframes pulse-purple { from { box-shadow: 0 0 10px rgba(217, 70, 239, 0.2); } to { box-shadow: 0 0 25px rgba(217, 70, 239, 0.5); } }
 
-        /* --- Modales --- */
-        .modal-overlay {
+        /* --- Modal Límite Diario --- */
+        .limit-modal {
             position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 100;
             display: none; align-items: center; justify-content: center; backdrop-filter: blur(10px);
         }
-        .modal-content {
-            background: #111; border: 2px solid #F47521; padding: 2rem;
-            border-radius: 15px; text-align: center; max-width: 400px; width: 90%;
-            box-shadow: 0 0 60px rgba(244,117,33,0.3); animation: bounceIn 0.3s;
+        .limit-content {
+            background: #111; border: 2px solid #ef4444; padding: 2.5rem;
+            border-radius: 15px; text-align: center; max-width: 450px; width: 90%;
+            box-shadow: 0 0 60px rgba(239, 68, 68, 0.2); animation: bounceIn 0.3s;
         }
-        
-        .loading-pulse { 
-            animation: pulse 1.5s infinite; color: var(--mystic-gold); 
-            font-size: 1.5rem; text-align: center; margin-top: 40px; font-family: 'Cinzel', serif;
-        }
-        @keyframes pulse { 0% { opacity: 0.5; } 50% { opacity: 1; } 100% { opacity: 0.5; } }
+
         @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes pulse-gold { 0%, 100% { opacity: 0.5; transform: scale(1); } 50% { opacity: 1; transform: scale(1.1); } }
+        @keyframes pulse-silver { 0%, 100% { opacity: 0.5; transform: scale(1); } 50% { opacity: 1; transform: scale(1.1); } }
+        @keyframes pulse-purple { from { box-shadow: 0 0 10px rgba(217, 70, 239, 0.2); } to { box-shadow: 0 0 25px rgba(217, 70, 239, 0.5); } }
         @keyframes bounceIn { 0% { transform: scale(0.8); } 60% { transform: scale(1.1); } 100% { transform: scale(1); } }
     </style>
 </head>
@@ -198,14 +236,18 @@
         <p id="attempts-display" class="text-xs text-gray-500 mt-4 font-mono uppercase tracking-widest">
             Intentos Gratis: <span id="attempts-count" class="text-white font-bold">3</span>/3
         </p>
+        <p id="cooldown-hint" class="text-[10px] text-red-400 mt-2 hidden animate-pulse">
+            <i class="fa-solid fa-hourglass-half"></i> Recargando energía... <span id="small-timer"></span>
+        </p>
     </div>
 
     <!-- MESA DE JUEGO -->
     <div id="game-area" class="mt-8 hidden">
         <div class="tarot-table" id="cards-container"></div>
         
-        <div id="loading-oracle" class="hidden loading-pulse">
-            <i class="fa-solid fa-spinner fa-spin text-3xl"></i><br>Interpretando tirada...
+        <div id="loading-oracle" class="hidden text-center mt-10">
+            <i class="fa-solid fa-spinner fa-spin text-4xl text-[#ffd700]"></i>
+            <p class="text-purple-300 mt-2 mystic-font">Interpretando el Destino...</p>
         </div>
 
         <div id="result-box" class="oracle-box">
@@ -219,38 +261,32 @@
         </div>
     </div>
 
-    <!-- MODAL DE BLOQUEO (LA TRAMPA) -->
-    <div id="lock-modal" class="modal-overlay">
-        <div class="modal-content">
+    <!-- MODAL LÍMITE ALCANZADO (24HS) -->
+    <div id="limit-modal" class="limit-modal">
+        <div class="limit-content">
             <i class="fa-solid fa-lock text-5xl text-red-500 mb-4 animate-bounce"></i>
             <h3 class="text-2xl font-black text-white uppercase mb-2">Energía Agotada</h3>
             <p class="text-gray-300 text-sm mb-6">
-                Has usado tus 3 consultas gratuitas de hoy. Los astros necesitan recargarse.
+                Has usado tus 3 consultas gratuitas de hoy. Los astros necesitan recargarse hasta mañana.
             </p>
             
-            <div id="timer-box" class="hidden mb-4 bg-red-900/30 p-2 rounded text-red-400 font-mono text-xs">
-                Siguiente recarga en: <span id="cooldown-timer">00:00:00</span>
+            <div class="bg-red-900/30 p-3 rounded text-red-300 font-mono text-xs mb-4 border border-red-500/30">
+                Reinicio en: <span id="limit-timer" class="font-bold text-white">00:00:00</span>
             </div>
-
-            <button onclick="triggerTrap()" class="w-full bg-gradient-to-r from-green-600 to-green-400 text-black font-black uppercase py-3 rounded shadow-[0_0_20px_rgba(34,197,94,0.4)] hover:scale-105 transition mb-2">
-                <i class="fa-solid fa-unlock"></i> Ganar 5 Consultas Gratis
-            </button>
             
-            <p class="text-[10px] text-gray-600 mt-2">
-                Solo usuarios Premium tienen intentos infinitos.
+            <p class="text-[10px] text-gray-500">
+                Los usuarios <span class="text-[#ffd700]">PREMIUM</span> tienen acceso ilimitado.
             </p>
         </div>
     </div>
 
-    <!-- MODAL LOGIN REQUERIDO -->
-    <div id="auth-modal" class="modal-overlay">
-        <div class="modal-content border-blue-500 shadow-blue-500/20">
+    <!-- MODAL LOGIN -->
+    <div id="auth-modal" class="limit-modal">
+        <div class="limit-content border-blue-500 shadow-[0_0_50px_rgba(59,130,246,0.2)]">
             <i class="fa-solid fa-user-lock text-5xl text-blue-500 mb-4"></i>
             <h3 class="text-xl font-bold text-white mb-2">Identificación Requerida</h3>
-            <p class="text-gray-400 text-xs mb-6">Para conectar con tu energía espiritual y guardar tu historial, debes iniciar sesión.</p>
-            <button onclick="parent.cargarPagina('Usuariotarot.html', null)" class="w-full bg-blue-600 text-white font-bold py-2 rounded uppercase text-xs hover:bg-blue-500 transition">
-                Ir a Iniciar Sesión
-            </button>
+            <p class="text-gray-400 text-xs mb-6">Para conectar con tu energía espiritual, debes iniciar sesión.</p>
+            <button onclick="parent.cargarPagina('Usuariotarot.html', null)" class="w-full bg-blue-600 text-white font-bold py-2 rounded uppercase text-xs hover:bg-blue-500 transition">Ir a Login</button>
         </div>
     </div>
 
@@ -278,11 +314,10 @@
         let userAttempts = 0;
         let lastReadingTime = 0;
 
-        // --- AUTH & DATA CHECK ---
+        // --- AUTH CHECK ---
         onAuthStateChanged(auth, async (user) => {
             if (user) {
                 currentUser = user;
-                // Check User Data
                 const userRef = doc(db, "users", user.uid);
                 const snap = await getDoc(userRef);
                 
@@ -291,7 +326,6 @@
                     userPremium = data.isPremium || false;
                     lastReadingTime = data.lastReadingTimestamp || 0;
                     
-                    // Reset diario
                     const today = new Date().toDateString();
                     if (data.lastTarotDate !== today) {
                         await updateDoc(userRef, { dailyTarotAttempts: 0, lastTarotDate: today });
@@ -315,36 +349,31 @@
                 countEl.classList.add("text-[#ffd700]");
             } else {
                 countEl.innerText = 3 - userAttempts;
-                if(userAttempts >= 3) showLockModal();
+                if(userAttempts >= 3) showLimitModal();
             }
         }
 
-        function showLockModal() {
-            const modal = document.getElementById('lock-modal');
-            const timerBox = document.getElementById('timer-box');
-            const timerEl = document.getElementById('cooldown-timer');
-            
+        // --- MODAL LÍMITE 24HS ---
+        function showLimitModal() {
+            const modal = document.getElementById('limit-modal');
             modal.style.display = 'flex';
-            timerBox.classList.remove('hidden');
             
-            // Countdown visual simple hasta mañana
+            // Timer hasta mañana
             setInterval(() => {
                 const now = new Date();
                 const tomorrow = new Date(now);
                 tomorrow.setDate(tomorrow.getDate() + 1);
                 tomorrow.setHours(0,0,0,0);
                 const diff = tomorrow - now;
-                
                 const h = Math.floor(diff / (1000 * 60 * 60));
                 const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
                 const s = Math.floor((diff % (1000 * 60)) / 1000);
-                timerEl.innerText = `${h}h ${m}m ${s}s`;
+                document.getElementById('limit-timer').innerText = `${h}h ${m}m ${s}s`;
             }, 1000);
         }
 
-        // Exponer funciones al window
+        // Exponer funciones
         window.handleConsult = handleConsult;
-        window.triggerTrap = triggerTrap;
         window.resetReading = resetReading;
 
         // --- SISTEMA DE CONSULTA ---
@@ -354,18 +383,15 @@
         async function handleConsult() {
             if (!currentUser) { document.getElementById('auth-modal').style.display = 'flex'; return; }
             
-            // Verificar Límites (Premium se salta todo)
+            // Check Premium / Límite
             if (!userPremium) {
-                if (userAttempts >= 3) {
-                    showLockModal();
-                    return;
-                }
+                if (userAttempts >= 3) { showLimitModal(); return; }
                 
-                // COOLDOWN DE 2 MINUTOS ENTRE TIRADAS GRATIS
+                // COOLDOWN 2 MINUTOS
                 const now = Date.now();
-                if (now - lastReadingTime < 120000) { // 120000 ms = 2 min
+                if (now - lastReadingTime < 120000) { 
                     const remaining = Math.ceil((120000 - (now - lastReadingTime)) / 1000);
-                    alert(`Debes esperar ${remaining} segundos para recargar energía espiritual.`);
+                    alert(`Debes esperar ${remaining} segundos para recargar energía.`);
                     return;
                 }
             }
@@ -373,7 +399,7 @@
             const question = document.getElementById('user-question').value.trim();
             if (!question) return alert("El universo necesita una pregunta clara.");
 
-            // Paso 1: Anuncio Obligatorio
+            // Anuncio
             if (!adWatched) {
                 window.open(AD_LINK, '_blank');
                 adWatched = true;
@@ -383,12 +409,12 @@
                 return;
             }
 
-            // Paso 2: Consumir Intento y Tirar
+            // Consumo
             if (!userPremium) {
                 const userRef = doc(db, "users", currentUser.uid);
                 await updateDoc(userRef, { 
                     dailyTarotAttempts: increment(1),
-                    lastReadingTimestamp: Date.now() // Guardar tiempo de lectura
+                    lastReadingTimestamp: Date.now()
                 });
                 userAttempts++;
                 lastReadingTime = Date.now();
@@ -398,43 +424,18 @@
             startReading(question);
         }
 
-        // --- LA TRAMPA (QuartzFiles) ---
-        function triggerTrap() {
-            // Simular carga de script
-            const script = document.createElement('script');
-            script.type = 'text/javascript';
-            script.src = 'https://quartzfiles.com/script_include.php?id=1863416';
-            document.body.appendChild(script);
-
-            // Simular espera y fallar
-            setTimeout(() => {
-                alert("❌ ERROR DE VERIFICACIÓN:\n\nEl sistema detectó que no completaste la oferta o tardaste demasiado.\n\nInténtalo de nuevo para desbloquear.");
-                location.reload();
-            }, 4000); 
-        }
-
-        // --- LÓGICA TAROT (Visuales y Deck) ---
-        
+        // --- LÓGICA TAROT (Visuales) ---
+        let deck = [];
         const majorArcana = ["The Fool", "The Magician", "The High Priestess", "The Empress", "The Emperor", "The Hierophant", "The Lovers", "The Chariot", "Strength", "The Hermit", "Wheel of Fortune", "Justice", "The Hanged Man", "Death", "Temperance", "The Devil", "The Tower", "The Star", "The Moon", "The Sun", "Judgement", "The World"];
         const suits = ["Wands", "Cups", "Swords", "Pentacles"];
         const ranks = ["Ace", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Page", "Knight", "Queen", "King"];
-        let deck = [];
 
-        // Build Deck
-        majorArcana.forEach((n, i) => deck.push({ name: n, type: "Major", num: toRoman(i), imgPrompt: `Rider Waite tarot card ${n}` }));
-        suits.forEach(s => ranks.forEach((r, i) => deck.push({ name: `${r} of ${s}`, type: "Minor", num: toRoman(i+1), imgPrompt: `Rider Waite tarot card ${r} of ${s}` })));
-
-        function toRoman(num) {
-            if(num===0) return "0";
-            const roman = {M:1000,CM:900,D:500,CD:400,C:100,XC:90,L:50,XL:40,X:10,IX:9,V:5,IV:4,I:1};
-            let str = '';
-            for(let i of Object.keys(roman)){
-                let q = Math.floor(num/roman[i]);
-                num -= q*roman[i];
-                str += i.repeat(q);
-            }
-            return str;
+        function buildDeck() {
+            majorArcana.forEach((n, i) => deck.push({ name: n, type: "Major", num: toRoman(i), imgPrompt: `Rider Waite tarot card ${n}` }));
+            suits.forEach(s => ranks.forEach((r, i) => deck.push({ name: `${r} of ${s}`, type: "Minor", num: toRoman(i+1), imgPrompt: `Rider Waite tarot card ${r} of ${s}` })));
         }
+        function toRoman(num) { if(num===0)return"0"; const roman={M:1000,CM:900,D:500,CD:400,C:100,XC:90,L:50,XL:40,X:10,IX:9,V:5,IV:4,I:1}; let str=''; for(let i of Object.keys(roman)){ let q=Math.floor(num/roman[i]); num-=q*roman[i]; str+=i.repeat(q); } return str; }
+        buildDeck();
 
         async function startReading(q) {
             document.getElementById('consult-btn').style.display = 'none';
@@ -442,29 +443,31 @@
             const container = document.getElementById('cards-container');
             container.innerHTML = '';
 
-            // Pick 3
             let picked = [];
             while(picked.length < 3) {
                 const r = deck[Math.floor(Math.random() * deck.length)];
                 if(!picked.includes(r)) picked.push(r);
             }
 
-            // Render
             const positions = ["Pasado", "Presente", "Futuro"];
             picked.forEach((c, i) => {
-                // Generar imagen con IA Pollinations al vuelo para asegurar estilo
-                const imgUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(c.imgPrompt + " classic tarot illustration high resolution detailed")}?width=300&height=500&nologo=true`;
+                // Determine Back Style
+                const backClass = c.type === 'Major' ? 'back-major' : 'back-minor';
+                const imgUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(c.imgPrompt + " vintage mystical tarot illustration highly detailed")}?width=300&height=500&nologo=true`;
 
                 const cardHTML = `
                     <div class="card-wrapper" id="wrap-${i}">
                         <div class="tarot-card" id="card-${i}">
-                            <div class="tarot-face tarot-back"></div>
-                            <div class="tarot-face tarot-front rw-style">
-                                <div class="rw-inner-border">
+                            <div class="tarot-face tarot-back ${backClass}">
+                                <div class="back-brand">ASTRALIS</div>
+                            </div>
+                            <div class="tarot-face tarot-front front-style">
+                                <div class="rw-content">
+                                    <div class="rw-header"><span class="rw-roman">${c.num}</span></div>
                                     <div class="rw-image-container"><img src="${imgUrl}" class="rw-image"></div>
-                                    <div class="rw-label-box">
-                                        <span class="rw-number">${c.num}</span>
+                                    <div class="rw-footer">
                                         <span class="rw-name">${c.name}</span>
+                                        <span class="rw-logo">ASTRALIS</span>
                                     </div>
                                 </div>
                             </div>
@@ -475,52 +478,35 @@
                 container.insertAdjacentHTML('beforeend', cardHTML);
             });
 
-            // Reveal
-            for(let i=0; i<3; i++) {
+            container.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            for (let i = 0; i < 3; i++) {
                 await new Promise(r => setTimeout(r, 1000));
                 document.getElementById(`card-${i}`).classList.add('flipped');
                 document.getElementById(`lbl-${i}`).parentElement.classList.add('show-label');
             }
 
-            // AI Interpretation
             interpret(q, picked);
         }
 
         async function interpret(q, cards) {
             const loading = document.getElementById('loading-oracle');
             const result = document.getElementById('result-box');
+            const aiText = document.getElementById('ai-response');
+            
             loading.classList.remove('hidden');
-            result.style.display = 'none';
             loading.scrollIntoView({ behavior: 'smooth', block: 'center' });
 
             const cardNames = cards.map(c => c.name).join(", ");
-            const prompt = `
-                Actúa como una tarotista experta llamada Astra. 
-                Pregunta: "${q}". Cartas: ${cardNames} (Rider-Waite). 
-                
-                Instrucciones de formato HTML:
-                1. Separa las cartas en párrafos (<p>).
-                2. Usa <span class="card-mention">NOMBRE CARTA</span> para los nombres.
-                3. Al final, escribe una conclusión breve dentro de <div class="conclusion-box">Conclusión: ...</div>.
-                
-                Interpreta la tirada mística y profundamente.
-            `;
+            const prompt = `Actúa como Astra, tarotista experta. Pregunta: "${q}". Cartas: ${cardNames} (Rider-Waite). Interpreta Pasado, Presente y Futuro en párrafos separados <p>. Resalta nombres con <span class="card-mention">NOMBRE</span>. Conclusión final en <div class="conclusion-box">Conclusión: ...</div>.`;
 
             try {
                 const res = await fetch(`https://text.pollinations.ai/${encodeURIComponent(prompt)}`);
                 const text = await res.text();
-                
-                // Limpiar posibles bloques de código
-                const cleanText = text.replace(/```html/g, '').replace(/```/g, '');
-                
-                document.getElementById('ai-response').innerHTML = cleanText;
+                aiText.innerHTML = text.replace(/```html/g, '').replace(/```/g, '');
                 loading.classList.add('hidden');
                 result.style.display = 'block';
                 result.scrollIntoView({ behavior: 'smooth', block: 'start' });
-
-            } catch(e) {
-                console.error(e);
-            }
+            } catch(e) { console.error(e); }
         }
         
         function resetReading() {
@@ -530,9 +516,6 @@
              document.getElementById('user-question').disabled = false;
              const btn = document.getElementById('consult-btn');
              btn.style.display = 'block';
-             // No reseteamos adWatched para mantener la lógica de 1 anuncio por sesión o por tirada según prefieras. 
-             // Si quieres 1 anuncio CADA VEZ, descomenta:
-             // adWatched = false; btn.innerHTML = '<i class="fa-solid fa-eye"></i> Consultar a las Cartas';
              window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
