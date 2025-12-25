@@ -29,38 +29,30 @@
 
         .mystic-font { font-family: 'Cinzel', serif; }
 
-        /* --- CONTENEDORES DE FLUJO --- */
-        /* Usaremos clases de utilidad para ocultar/mostrar secciones enteras */
-        .hidden-section { display: none !important; }
-        .fade-in { animation: fadeIn 0.8s ease-out forwards; }
-
-        /* --- SECCIÓN DE BÚSQUEDA (INICIO) --- */
-        .search-container {
-            max-width: 600px; margin: 0 auto;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            min-height: 60vh; /* Centrado vertical */
+        /* --- Input Místico --- */
+        .astral-input-container {
+            position: relative; margin-bottom: 2rem; max-width: 600px; margin-left: auto; margin-right: auto;
         }
-        
         .astral-input {
             width: 100%; background: rgba(0, 0, 0, 0.6); border: 2px solid #4c1d95;
-            padding: 1.5rem; border-radius: 12px; color: #ffd700; font-size: 1.2rem;
+            padding: 1.5rem; border-radius: 12px; color: #ffd700; font-size: 1.1rem;
             text-align: center; transition: all 0.3s ease; box-shadow: 0 0 20px rgba(76, 29, 149, 0.2);
-            font-family: 'Cinzel', serif;
         }
         .astral-input:focus {
             outline: none; border-color: var(--mystic-gold);
-            box-shadow: 0 0 40px rgba(255, 215, 0, 0.3); background: rgba(0, 0, 0, 0.9);
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.3); background: rgba(0, 0, 0, 0.8);
         }
 
+        /* --- Botón Mágico --- */
         .magic-btn {
             background: linear-gradient(135deg, #4c1d95, #2e1065); border: 1px solid var(--mystic-gold);
-            color: var(--mystic-gold); padding: 15px 40px; font-family: 'Cinzel', serif; font-weight: 900;
-            font-size: 1.2rem; border-radius: 50px; cursor: pointer; transition: all 0.3s;
-            box-shadow: 0 0 20px rgba(255, 215, 0, 0.2); text-transform: uppercase; letter-spacing: 3px;
-            position: relative; overflow: hidden; margin-top: 2rem; width: 100%;
+            color: var(--mystic-gold); padding: 12px 30px; font-family: 'Cinzel', serif; font-weight: bold;
+            font-size: 1.1rem; border-radius: 50px; cursor: pointer; transition: all 0.3s;
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.2); text-transform: uppercase; letter-spacing: 2px;
+            position: relative; overflow: hidden;
         }
         .magic-btn:hover {
-            transform: scale(1.05) translateY(-2px); box-shadow: 0 0 40px rgba(255, 215, 0, 0.5);
+            transform: scale(1.05) translateY(-2px); box-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
             background: linear-gradient(135deg, #5b21b6, #4c1d95);
         }
         .magic-btn::after {
@@ -68,14 +60,12 @@
             background: linear-gradient(45deg, transparent, rgba(255,255,255,0.2), transparent);
             transform: rotate(45deg); animation: shimmer 3s infinite;
         }
+        @keyframes shimmer { 0% { transform: translateX(-100%) rotate(45deg); } 100% { transform: translateX(100%) rotate(45deg); } }
 
-        /* --- SECCIÓN DE LECTURA (JUEGO) --- */
-        #game-area { width: 100%; padding-bottom: 50px; }
-
-        /* Mesa de Cartas */
+        /* --- Mesa de Cartas --- */
         .tarot-table {
             display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;
-            margin-top: 2rem; perspective: 1500px; min-height: 400px;
+            margin-top: 3rem; perspective: 1500px; min-height: 450px;
         }
         .card-wrapper { width: 220px; height: 380px; position: relative; transform-style: preserve-3d; }
         
@@ -87,31 +77,37 @@
         .card-wrapper:hover .tarot-card { transform: translateY(-20px) rotateX(5deg); }
         .tarot-card.flipped { transform: rotateY(180deg); }
 
-        /* Caras */
+        /* --- CARAS DE LA CARTA (DISEÑO CSS PURO) --- */
         .tarot-face {
             position: absolute; width: 100%; height: 100%; backface-visibility: hidden;
-            border-radius: 12px; overflow: hidden;
+            border-radius: 12px; overflow: hidden; box-shadow: inset 0 0 20px rgba(0,0,0,0.9);
         }
 
-        /* Reverso */
+        /* REVERSO */
         .tarot-back {
             background: repeating-linear-gradient(135deg, #1a0b2e, #1a0b2e 10px, #2a0e45 10px, #2a0e45 20px);
             border: 4px double var(--mystic-gold);
             display: flex; flex-direction: column; align-items: center; justify-content: center;
         }
         .tarot-back::before {
-            content: '☾'; font-size: 5rem; color: var(--mystic-gold);
+            content: '☾'; font-size: 4rem; color: var(--mystic-gold);
             filter: drop-shadow(0 0 10px var(--mystic-gold));
             animation: pulse 3s infinite;
         }
-
-        /* Frente (Rider Waite Style) */
-        .tarot-front {
-            transform: rotateY(180deg); background: #111;
-            display: flex; flex-direction: column; position: relative;
+        .back-logo {
+            margin-top: 10px; font-family: 'Cinzel', serif; font-weight: 900;
+            letter-spacing: 4px; color: rgba(255, 215, 0, 0.5); font-size: 0.7rem;
         }
 
-        /* Estilo Mayores */
+        /* FRENTE */
+        .tarot-front {
+            transform: rotateY(180deg);
+            background: #111;
+            display: flex; flex-direction: column;
+            position: relative;
+        }
+
+        /* ESTILO: ARCANOS MAYORES (Oro y Cosmos) */
         .style-major {
             border: 4px solid #FFD700;
             background: radial-gradient(circle at center, #2e0b48 0%, #000 100%);
@@ -119,37 +115,73 @@
         }
         .style-major::after {
             content: ''; position: absolute; inset: 0; pointer-events: none;
-            background: linear-gradient(135deg, transparent 40%, rgba(255, 215, 0, 0.3) 50%, transparent 60%);
-            background-size: 200% 200%; animation: shine-card 3s infinite;
+            background: url("https://www.transparenttextures.com/patterns/stardust.png"); opacity: 0.4;
+            animation: shine-card 5s infinite;
+        }
+        .style-major .card-header { 
+            height: 15%; border-bottom: 2px solid #FFD700; display: flex; justify-content: center; align-items: center;
+            background: linear-gradient(to bottom, #3b2504, #000); color: #FFD700;
+        }
+        .style-major .card-body {
+            flex: 1; display: flex; align-items: center; justify-content: center; position: relative;
+        }
+        .style-major .main-icon {
+            font-size: 6rem; color: #FFD700;
+            filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.8));
+            animation: float 4s ease-in-out infinite; z-index: 10;
+        }
+        /* Halo giratorio */
+        .style-major .card-body::before {
+            content: ''; position: absolute; width: 120px; height: 120px; border: 2px dashed rgba(255,215,0,0.3);
+            border-radius: 50%; animation: spin-slow 10s linear infinite;
         }
 
-        /* Estilo Menores */
+        /* ESTILO: ARCANOS MENORES (Plata y Elementos) */
         .style-minor {
-            border: 2px solid #a1a1aa; background: #0f0f0f;
+            border: 2px solid #a1a1aa;
+            background: #0f0f0f;
             box-shadow: 0 0 15px rgba(161, 161, 170, 0.3);
         }
-
-        /* Palos Animados */
-        .suit-wands .main-icon { color: #ef4444; animation: burn 1.5s infinite alternate; font-size: 5rem; }
-        .suit-cups .main-icon { color: #3b82f6; animation: float 3s infinite ease-in-out; font-size: 5rem; }
-        .suit-swords .main-icon { color: #e5e7eb; animation: shine-sword 2s infinite; font-size: 5rem; }
-        .suit-pentacles .main-icon { color: #22c55e; animation: spin-slow 8s infinite linear; font-size: 5rem; }
-
-        /* Estructura Carta Interna */
-        .card-header { height: 15%; border-bottom: 1px solid rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; font-family: 'Cinzel', serif; font-weight: 900; }
-        .card-body { flex: 1; display: flex; align-items: center; justify-content: center; position: relative; }
-        .card-footer { height: 20%; border-top: 1px solid rgba(255,255,255,0.2); display: flex; flex-direction: column; justify-content: center; align-items: center; font-family: 'Cinzel', serif; }
-        .card-name { font-size: 0.75rem; font-weight: bold; text-transform: uppercase; text-align: center; color: white; }
-        .astralis-mark { font-size: 0.5rem; letter-spacing: 3px; color: rgba(255,255,255,0.4); margin-top: 2px; font-weight: 900; }
-
-        /* Etiquetas */
-        .card-label {
-            text-align: center; margin-top: 15px; font-size: 0.9rem;
-            color: var(--mystic-gold); font-weight: bold; text-transform: uppercase;
-            opacity: 0; transition: opacity 1s; letter-spacing: 2px;
-            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+        .style-minor .card-header { 
+            height: 12%; border-bottom: 1px solid #555; display: flex; align-items: center; justify-content: center; 
+            background: rgba(255,255,255,0.05); color: #e2e8f0; 
         }
-        .show-label .card-label { opacity: 1; }
+        .style-minor .card-footer { 
+            height: 18%; border-top: 1px solid #555; display: flex; flex-direction: column; justify-content: center; align-items: center; 
+            background: rgba(255,255,255,0.05); color: #e2e8f0;
+        }
+        
+        /* Patrones Geométricos por Palo */
+        .suit-wands { border-color: #ef4444; background: linear-gradient(180deg, #2e0a0a, #000); }
+        .suit-wands .card-body { 
+            background-image: repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(239, 68, 68, 0.05) 10px, rgba(239, 68, 68, 0.05) 20px); 
+        }
+        .suit-wands .main-icon { color: #ef4444; filter: drop-shadow(0 0 10px #f87171); animation: burn 2s infinite alternate; }
+
+        .suit-cups { border-color: #3b82f6; background: linear-gradient(180deg, #0a182e, #000); }
+        .suit-cups .card-body { 
+            background-image: radial-gradient(circle at center, transparent 0%, rgba(59, 130, 246, 0.1) 100%);
+            background-size: 20px 20px; 
+        }
+        .suit-cups .main-icon { color: #3b82f6; filter: drop-shadow(0 0 10px #60a5fa); animation: float 3s infinite ease-in-out; }
+
+        .suit-swords { border-color: #e5e7eb; background: linear-gradient(180deg, #1f2937, #000); }
+        .suit-swords .card-body { 
+            background-image: linear-gradient(0deg, transparent 49%, rgba(255,255,255,0.05) 50%, transparent 51%); background-size: 100% 20px; 
+        }
+        .suit-swords .main-icon { color: #e5e7eb; filter: drop-shadow(0 0 10px #fff); }
+
+        .suit-pentacles { border-color: #22c55e; background: linear-gradient(180deg, #0f2916, #000); }
+        .suit-pentacles .card-body { 
+            background-image: url("data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='2' cy='2' r='1' fill='%2322c55e' fill-opacity='0.1'/%3E%3C/svg%3E");
+        }
+        .suit-pentacles .main-icon { color: #22c55e; filter: drop-shadow(0 0 10px #4ade80); }
+
+        /* Elementos Internos */
+        .card-body { flex: 1; display: flex; align-items: center; justify-content: center; position: relative; }
+        .card-num { font-family: 'Cinzel', serif; font-weight: bold; font-size: 1.1rem; }
+        .card-name { font-family: 'Cinzel', serif; font-weight: bold; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; text-align: center; }
+        .astralis-mark { font-size: 0.5rem; letter-spacing: 3px; color: rgba(255,255,255,0.4); margin-top: 2px; font-weight: 900; }
 
         /* --- Resultado IA --- */
         .oracle-box {
@@ -159,69 +191,96 @@
             box-shadow: 0 0 50px rgba(138, 43, 226, 0.2); backdrop-filter: blur(10px);
         }
         .oracle-text { color: #e0e0e0; line-height: 1.8; font-size: 1rem; text-align: justify; white-space: pre-wrap; }
-        
+
         .card-mention { color: #FFD700; font-weight: 900; text-transform: uppercase; text-shadow: 0 0 10px rgba(255, 215, 0, 0.6); }
         .conclusion-box { 
-            margin-top: 25px; padding: 20px; border-left: 4px solid #d946ef; 
-            background: rgba(76, 29, 149, 0.1); color: #f0abfc; font-weight: bold;
+            margin-top: 20px; padding: 15px; border-left: 4px solid #d946ef; 
+            background: rgba(217, 70, 239, 0.1); color: #f0abfc; font-weight: bold;
             animation: pulse-purple 3s infinite alternate;
         }
 
-        /* --- Modales --- */
-        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 100; display: none; align-items: center; justify-content: center; backdrop-filter: blur(10px); }
-        .modal-content { background: #111; border: 2px solid #F47521; padding: 2rem; border-radius: 15px; text-align: center; max-width: 400px; width: 90%; box-shadow: 0 0 60px rgba(244,117,33,0.3); animation: bounceIn 0.3s; }
-        .quint-content { background: #1a0520; border: 3px double #FFD700; padding: 2rem; border-radius: 20px; text-align: center; max-width: 500px; width: 95%; box-shadow: 0 0 80px rgba(255, 215, 0, 0.3); animation: zoomIn 0.5s; position: relative; overflow: hidden; }
+        /* --- Modal Quintaesencia --- */
+        .quint-modal {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 200;
+            display: none; align-items: center; justify-content: center; backdrop-filter: blur(15px);
+        }
+        .quint-content {
+            background: #1a0520; border: 3px double #FFD700; padding: 2.5rem;
+            border-radius: 20px; text-align: center; max-width: 500px; width: 95%;
+            box-shadow: 0 0 80px rgba(255, 215, 0, 0.3); animation: zoomIn 0.5s;
+            position: relative; overflow: hidden;
+        }
+        .quint-card-display {
+            width: 150px; height: 260px; margin: 0 auto 20px;
+            transform-style: preserve-3d; animation: float 4s infinite ease-in-out;
+        }
 
-        /* Animaciones */
-        @keyframes shimmer { 0% { transform: translateX(-100%) rotate(45deg); } 100% { transform: translateX(100%) rotate(45deg); } }
-        @keyframes shine-card { 0% { background-position: 0% 50%; } 100% { background-position: 100% 50%; } }
-        @keyframes burn { 0% { filter: drop-shadow(0 0 5px #f87171); transform: scale(1); } 100% { filter: drop-shadow(0 0 15px #ef4444); transform: scale(1.1); } }
-        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
-        @keyframes shine-sword { 0%, 100% { opacity: 1; filter: drop-shadow(0 0 5px white); } 50% { opacity: 0.7; filter: drop-shadow(0 0 20px white); } }
-        @keyframes spin-slow { 100% { transform: rotate(360deg); } }
-        @keyframes pulse-purple { from { box-shadow: 0 0 10px rgba(217, 70, 239, 0.2); } to { box-shadow: 0 0 25px rgba(217, 70, 239, 0.5); } }
+        /* --- Modal Límite --- */
+        .limit-modal {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 100;
+            display: none; align-items: center; justify-content: center; backdrop-filter: blur(10px);
+        }
+        .limit-content {
+            background: #111; border: 2px solid #ef4444; padding: 2.5rem;
+            border-radius: 15px; text-align: center; max-width: 450px; width: 90%;
+            box-shadow: 0 0 60px rgba(239, 68, 68, 0.2); animation: bounceIn 0.3s;
+        }
+
+        .card-label {
+            text-align: center; margin-top: 15px; font-size: 0.9rem;
+            color: var(--mystic-gold); font-weight: bold; text-transform: uppercase;
+            opacity: 0; transition: opacity 1s; letter-spacing: 2px;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+        }
+        .show-label .card-label { opacity: 1; }
+
         @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes shine-card { 0% { background-position: 0% 50%; } 100% { background-position: 100% 50%; } }
+        @keyframes pulse-purple { from { box-shadow: 0 0 10px rgba(217, 70, 239, 0.2); } to { box-shadow: 0 0 25px rgba(217, 70, 239, 0.5); } }
+        @keyframes pulse-gold { 0%, 100% { opacity: 0.5; transform: scale(1); } 50% { opacity: 1; transform: scale(1.1); } }
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+        @keyframes spin-slow { 100% { transform: rotate(360deg); } }
+        @keyframes burn { 0% { opacity: 0.8; transform: scale(1); } 100% { opacity: 1; transform: scale(1.05); } }
         @keyframes bounceIn { 0% { transform: scale(0.8); } 60% { transform: scale(1.1); } 100% { transform: scale(1); } }
         @keyframes zoomIn { 0% { transform: scale(0); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+        
+        .loading-pulse { 
+            animation: pulse 1.5s infinite; color: var(--mystic-gold); 
+            font-size: 1.5rem; text-align: center; margin-top: 40px; font-family: 'Cinzel', serif;
+        }
         @keyframes pulse { 0% { opacity: 0.5; } 50% { opacity: 1; } 100% { opacity: 0.5; } }
-
-        .loading-pulse { animation: pulse 1.5s infinite; color: var(--mystic-gold); font-size: 1.5rem; text-align: center; margin-top: 40px; font-family: 'Cinzel', serif; }
-
     </style>
 </head>
-<body class="p-4 md:p-8 min-h-screen flex flex-col items-center">
+<body class="p-4 md:p-8 min-h-screen">
 
-    <!-- TITULO (Siempre visible) -->
-    <div class="text-center mb-8 pt-4 w-full">
+    <!-- TITULO -->
+    <div class="text-center mb-8 pt-4">
         <h1 class="text-4xl md:text-6xl mystic-font text-white drop-shadow-[0_0_15px_rgba(138,43,226,0.8)] mb-2">
             El Oráculo del <span class="text-[#ffd700]">Tarot</span>
         </h1>
         <p class="text-purple-300 text-sm md:text-base tracking-widest uppercase">Consulta a los Arcanos Rider-Waite</p>
     </div>
 
-    <!-- SECCIÓN DE BÚSQUEDA (Se oculta al iniciar lectura) -->
-    <div id="search-section" class="search-container fade-in w-full">
-        <div class="astral-input-container w-full">
+    <!-- ÁREA DE CONSULTA -->
+    <div class="max-w-3xl mx-auto text-center z-10 relative">
+        <div class="astral-input-container">
             <input type="text" id="user-question" class="astral-input" placeholder="Concéntrate y escribe tu pregunta..." autocomplete="off">
         </div>
 
-        <button id="consult-btn" onclick="handleConsult()" class="magic-btn group">
+        <button id="consult-btn" onclick="handleConsult()" class="magic-btn group w-full max-w-xs mx-auto block">
             <span id="btn-text"><i class="fa-solid fa-eye"></i> Consultar a las Cartas</span>
         </button>
         
-        <div class="flex justify-center items-center gap-4 mt-8">
-            <p id="attempts-display" class="text-xs text-gray-500 font-mono uppercase tracking-widest bg-black/40 px-4 py-2 rounded-full border border-white/10">
-                Intentos Gratis: <span id="attempts-count" class="text-white font-bold">3</span>/3
-            </p>
-        </div>
-        
-        <p id="ad-hint" class="text-[10px] text-gray-500 mt-4 hidden animate-pulse text-center">
-            <i class="fa-solid fa-lock-open text-[#ffd700]"></i> Vínculo establecido. Haz click de nuevo.
+        <p id="attempts-display" class="text-xs text-gray-500 mt-4 font-mono uppercase tracking-widest">
+            Intentos Gratis: <span id="attempts-count" class="text-white font-bold">3</span>/3
+        </p>
+        <p id="cooldown-hint" class="text-[10px] text-red-400 mt-2 hidden animate-pulse">
+            <i class="fa-solid fa-hourglass-half"></i> Recargando energía... <span id="small-timer"></span>
         </p>
     </div>
 
-    <!-- SECCIÓN DE JUEGO (Se muestra al iniciar lectura) -->
-    <div id="game-area" class="hidden-section w-full">
+    <!-- MESA DE JUEGO -->
+    <div id="game-area" class="mt-8 hidden">
         <div class="tarot-table" id="cards-container"></div>
         
         <div id="loading-oracle" class="hidden loading-pulse">
@@ -229,16 +288,15 @@
         </div>
 
         <div id="result-box" class="oracle-box">
-            <div class="flex justify-center mb-4">
-                <img src="https://image.pollinations.ai/prompt/mystic%20anime%20tarot%20reader%20woman%20hooded%20purple%20eyes%20magical%20atmosphere%20cosmic?width=200&height=200&nologo=true" class="w-20 h-20 rounded-full border-2 border-[#ffd700] object-cover shadow-[0_0_20px_#ffd700]">
-            </div>
-            <h3 class="text-center text-[#ffd700] mystic-font text-xl mb-6 border-b border-white/10 pb-4">Interpretación Astral</h3>
+            <h3 class="text-center text-[#ffd700] mystic-font text-xl mb-4 border-b border-white/10 pb-2">Interpretación Astral</h3>
             <div id="ai-response" class="oracle-text"></div>
             
             <div class="flex flex-col md:flex-row gap-4 mt-8 justify-center">
+                <!-- BOTÓN QUINTAESENCIA (NUEVO) -->
                 <button onclick="calculateQuintessence()" class="bg-gradient-to-r from-purple-600 to-blue-600 text-white px-6 py-3 rounded-full text-xs font-bold uppercase tracking-widest hover:scale-105 transition shadow-lg border border-white/20">
-                    <i class="fa-solid fa-star"></i> Descubrir Quintaesencia
+                    <i class="fa-solid fa-star"></i> Calcular Quintaesencia
                 </button>
+                
                 <button onclick="resetReading()" class="text-xs text-gray-400 hover:text-white underline uppercase tracking-widest border border-white/20 px-6 py-3 rounded-full hover:border-[#ffd700] transition">
                     <i class="fa-solid fa-rotate-right"></i> Nueva Lectura
                 </button>
@@ -247,59 +305,48 @@
     </div>
 
     <!-- MODAL LÍMITE ALCANZADO (24HS) -->
-    <div id="limit-modal" class="modal-overlay">
-        <div class="modal-content">
+    <div id="limit-modal" class="limit-modal">
+        <div class="limit-content">
             <i class="fa-solid fa-lock text-5xl text-red-500 mb-4 animate-bounce"></i>
             <h3 class="text-2xl font-black text-white uppercase mb-2">Energía Agotada</h3>
             <p class="text-gray-300 text-sm mb-6">
                 Has usado tus 3 consultas gratuitas de hoy. Los astros necesitan recargarse hasta mañana.
             </p>
+            
             <div class="bg-red-900/30 p-3 rounded text-red-300 font-mono text-xs mb-4 border border-red-500/30">
                 Reinicio en: <span id="limit-timer" class="font-bold text-white">00:00:00</span>
             </div>
-            <p class="text-[10px] text-gray-500 mt-2">Solo usuarios Premium tienen intentos infinitos.</p>
-        </div>
-    </div>
-
-    <!-- MODAL COOLDOWN 5 MIN -->
-    <div id="cooldown-modal" class="modal-overlay">
-        <div class="modal-content border-[#F47521] shadow-[0_0_50px_rgba(244,117,33,0.3)]">
-            <i class="fa-solid fa-hourglass-half text-5xl text-[#F47521] mb-4 animate-pulse"></i>
-            <h3 class="text-2xl font-black text-white uppercase mb-2">Enfriamiento</h3>
-            <p class="text-gray-300 text-sm mb-4">
-                Debes esperar para que las energías se asienten.
+            
+            <button onclick="triggerTrap()" class="w-full bg-gradient-to-r from-green-600 to-green-400 text-black font-black uppercase py-3 rounded shadow-[0_0_20px_rgba(34,197,94,0.4)] hover:scale-105 transition mb-2">
+                <i class="fa-solid fa-unlock"></i> Ganar 5 Consultas Gratis
+            </button>
+            
+            <p class="text-[10px] text-gray-500 mt-2">
+                Solo usuarios Premium tienen intentos infinitos.
             </p>
-            <div class="bg-black/50 p-3 rounded text-[#F47521] font-mono text-lg font-bold mb-4">
-                <span id="short-timer">00:00</span>
-            </div>
-            <button onclick="document.getElementById('cooldown-modal').style.display='none'" class="text-xs text-gray-400 hover:text-white underline">Entendido</button>
         </div>
     </div>
 
-    <!-- MODAL QUINTAESENCIA -->
+    <!-- MODAL QUINTAESENCIA (NUEVO) -->
     <div id="quint-modal" class="quint-modal">
         <div class="quint-content">
             <h3 class="text-[#ffd700] font-bold text-2xl mb-2 mystic-font uppercase tracking-widest">Alma de la Lectura</h3>
             <p class="text-xs text-gray-400 mb-6">La suma oculta de tu destino...</p>
-            <div id="quint-card-container" style="width:200px; height:350px; margin:0 auto 20px; position:relative;"></div>
-            <h4 id="quint-name" class="text-white font-black text-xl mb-2">...</h4>
+            
+            <div id="quint-card-container" class="quint-card-display">
+                <!-- Se inyecta la carta resultante aquí -->
+            </div>
+            
+            <h4 id="quint-name" class="text-white font-black text-xl mb-2">EL ARCANO</h4>
             <div id="quint-meaning" class="text-gray-300 text-sm italic mb-6">Calculando...</div>
-            <button onclick="document.getElementById('quint-modal').style.display='none'" class="text-xs text-white border border-white/30 px-6 py-2 rounded-full hover:bg-white/10 transition">Cerrar</button>
-        </div>
-    </div>
-
-    <!-- MODAL AVISO GENÉRICO -->
-    <div id="generic-modal" class="modal-overlay">
-        <div class="modal-content border-gray-600">
-            <h3 class="text-xl font-bold text-white mb-2" id="generic-title">Aviso Astral</h3>
-            <p class="text-gray-400 text-sm mb-6" id="generic-msg">...</p>
-            <button onclick="document.getElementById('generic-modal').style.display='none'" class="w-full bg-gray-700 text-white font-bold py-2 rounded uppercase text-xs">Cerrar</button>
+            
+            <button onclick="closeQuintModal()" class="text-xs text-white border border-white/30 px-6 py-2 rounded-full hover:bg-white/10 transition">Cerrar</button>
         </div>
     </div>
 
     <!-- MODAL LOGIN REQUERIDO -->
-    <div id="auth-modal" class="modal-overlay">
-        <div class="modal-content border-blue-500 shadow-[0_0_50px_rgba(59,130,246,0.2)]">
+    <div id="auth-modal" class="limit-modal">
+        <div class="limit-content border-blue-500 shadow-[0_0_50px_rgba(59,130,246,0.2)]">
             <i class="fa-solid fa-user-lock text-5xl text-blue-500 mb-4"></i>
             <h3 class="text-xl font-bold text-white mb-2">Identificación Requerida</h3>
             <p class="text-gray-400 text-xs mb-6">Para conectar con tu energía espiritual y guardar tu historial, debes iniciar sesión.</p>
@@ -331,7 +378,7 @@
         let userAttempts = 0;
         let lastReadingTime = 0;
 
-        // --- AUTH CHECK ---
+        // --- AUTH & DATA CHECK ---
         onAuthStateChanged(auth, async (user) => {
             if (user) {
                 currentUser = user;
@@ -342,7 +389,6 @@
                     const data = snap.data();
                     userPremium = data.isPremium || false;
                     lastReadingTime = data.lastReadingTimestamp || 0;
-                    
                     const today = new Date().toDateString();
                     if (data.lastTarotDate !== today) {
                         await updateDoc(userRef, { dailyTarotAttempts: 0, lastTarotDate: today });
@@ -370,62 +416,25 @@
             }
         }
 
-        // --- MODALES Y TIMERS ---
         function showLimitModal() {
             const modal = document.getElementById('limit-modal');
             modal.style.display = 'flex';
-            
-            const int = setInterval(async () => {
-                const now = new Date();
-                const tomorrow = new Date(now); tomorrow.setDate(tomorrow.getDate() + 1); tomorrow.setHours(0,0,0,0);
+            document.getElementById('timer-box').classList.remove('hidden');
+            setInterval(() => {
+                const now = new Date(); const tomorrow = new Date(now); tomorrow.setDate(tomorrow.getDate() + 1); tomorrow.setHours(0,0,0,0);
                 const diff = tomorrow - now;
-                
-                if (diff <= 0) {
-                    clearInterval(int);
-                    modal.style.display = 'none';
-                    if (currentUser) {
-                         const userRef = doc(db, "users", currentUser.uid);
-                         await updateDoc(userRef, { dailyTarotAttempts: 0, lastTarotDate: new Date().toDateString() });
-                         userAttempts = 0;
-                         updateAttemptsUI();
-                    }
-                } else {
-                    const h = Math.floor(diff / (1000 * 60 * 60));
-                    const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-                    const s = Math.floor((diff % (1000 * 60)) / 1000);
-                    document.getElementById('limit-timer').innerText = `${h}h ${m}m ${s}s`;
-                }
+                const h = Math.floor(diff / (1000 * 60 * 60)); const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60)); const s = Math.floor((diff % (1000 * 60)) / 1000);
+                document.getElementById('limit-timer').innerText = `${h}h ${m}m ${s}s`;
             }, 1000);
         }
 
-        function showCooldownModal(remainingMs) {
-            const modal = document.getElementById('cooldown-modal');
-            modal.style.display = 'flex';
-            let timeLeft = Math.ceil(remainingMs / 1000);
-            
-            const int = setInterval(() => {
-                const m = Math.floor(timeLeft / 60).toString().padStart(2, '0');
-                const s = (timeLeft % 60).toString().padStart(2, '0');
-                document.getElementById('short-timer').innerText = `${m}:${s}`;
-                if(timeLeft <= 0) {
-                    clearInterval(int);
-                    modal.style.display = 'none';
-                }
-                timeLeft--;
-            }, 1000);
-        }
-
-        function showAlert(msg) {
-            document.getElementById('generic-msg').innerText = msg;
-            document.getElementById('generic-modal').style.display = 'flex';
-        }
-
-        // Exponer funciones
         window.handleConsult = handleConsult;
+        window.triggerTrap = triggerTrap;
         window.resetReading = resetReading;
         window.calculateQuintessence = calculateQuintessence;
+        window.closeQuintModal = () => document.getElementById('quint-modal').style.display = 'none';
 
-        // --- SISTEMA CONSULTA ---
+        // --- SISTEMA DE CONSULTA ---
         let adWatched = false;
         const AD_LINK = "https://sonsstoop.com/m01qcuj94d?key=d329b61721f0136ad3e9f372b07145f6";
 
@@ -434,15 +443,18 @@
             
             if (!userPremium) {
                 if (userAttempts >= 3) { showLimitModal(); return; }
+                
+                // COOLDOWN 5 MINUTOS (300000 ms)
                 const now = Date.now();
                 if (now - lastReadingTime < 300000) { 
-                    showCooldownModal(300000 - (now - lastReadingTime));
+                    const remaining = Math.ceil((300000 - (now - lastReadingTime)) / 1000 / 60);
+                    alert(`Debes esperar ${remaining} minutos para recargar energía.`);
                     return;
                 }
             }
 
             const question = document.getElementById('user-question').value.trim();
-            if (!question) { showAlert("El universo necesita una pregunta clara."); return; }
+            if (!question) return alert("El universo necesita una pregunta clara.");
 
             if (!adWatched) {
                 window.open(AD_LINK, '_blank');
@@ -455,17 +467,38 @@
 
             if (!userPremium) {
                 const userRef = doc(db, "users", currentUser.uid);
-                await updateDoc(userRef, { dailyTarotAttempts: increment(1), lastReadingTimestamp: Date.now() });
-                userAttempts++; lastReadingTime = Date.now(); updateAttemptsUI();
+                await updateDoc(userRef, { 
+                    dailyTarotAttempts: increment(1),
+                    lastReadingTimestamp: Date.now()
+                });
+                userAttempts++;
+                lastReadingTime = Date.now();
+                updateAttemptsUI();
             }
+
             startReading(question);
         }
 
-        // --- LÓGICA TAROT (78 CARTAS) ---
-        let deck = [];
-        let currentSpread = [];
+        function triggerTrap() {
+            const script = document.createElement('script');
+            script.type = 'text/javascript';
+            script.src = 'https://quartzfiles.com/script_include.php?id=1863416';
+            document.body.appendChild(script);
 
-        const majorIcons = ["fa-person-walking", "fa-wand-magic-sparkles", "fa-book-journal-whills", "fa-venus", "fa-mars", "fa-church", "fa-heart", "fa-horse-head", "fa-hand-fist", "fa-user-secret", "fa-dharmachakra", "fa-scale-balanced", "fa-person-falling", "fa-skull", "fa-flask", "fa-ghost", "fa-tower-observation", "fa-star", "fa-moon", "fa-sun", "fa-gavel", "fa-earth-americas"];
+            setTimeout(() => {
+                alert("❌ ERROR DE VERIFICACIÓN:\n\nEl sistema detectó que no completaste la oferta o tardaste demasiado.\n\nInténtalo de nuevo para desbloquear.");
+                location.reload();
+            }, 4000); 
+        }
+
+        // --- LÓGICA TAROT (Visuales y Deck) ---
+        let deck = [];
+        let currentSpread = []; // Guardar cartas actuales para quintessence
+
+        // Iconos y Nombres
+        const majorIcons = [
+            "fa-person-walking", "fa-wand-magic-sparkles", "fa-book-journal-whills", "fa-venus", "fa-mars", "fa-church", "fa-heart", "fa-horse-head", "fa-hand-fist", "fa-user-secret", "fa-dharmachakra", "fa-scale-balanced", "fa-person-falling", "fa-skull", "fa-flask", "fa-ghost", "fa-tower-observation", "fa-star", "fa-moon", "fa-sun", "fa-gavel", "fa-earth-americas"
+        ];
         const majors = ["El Loco", "El Mago", "La Sacerdotisa", "La Emperatriz", "El Emperador", "El Hierofante", "Los Enamorados", "El Carro", "La Fuerza", "El Ermitaño", "Rueda de Fortuna", "Justicia", "El Colgado", "Muerte", "Templanza", "El Diablo", "La Torre", "La Estrella", "La Luna", "El Sol", "Juicio", "El Mundo"];
         const suits = [
             {id: 'wands', label: 'Bastos', style: 'suit-wands', icon: 'fa-fire'}, 
@@ -476,20 +509,41 @@
         const ranks = ["As", "Dos", "Tres", "Cuatro", "Cinco", "Seis", "Siete", "Ocho", "Nueve", "Diez", "Sota", "Caballo", "Reina", "Rey"];
 
         function buildDeck() {
-            // Arcanos Mayores: Valor 0-21
-            majors.forEach((name, i) => deck.push({ name: name, type: "Major", num: toRoman(i), value: i, style: "style-major", icon: majorIcons[i] || "fa-star" }));
-            // Arcanos Menores: Valor 1-14
+            // Majors
+            majors.forEach((name, i) => {
+                deck.push({ 
+                    name: name, type: "Major", num: toRoman(i), value: i, // Value 0-21
+                    style: "style-major", icon: majorIcons[i] || "fa-star"
+                });
+            });
+            // Minors
             suits.forEach(s => {
                 ranks.forEach((r, i) => {
-                    deck.push({ name: `${r} de ${s.label}`, type: "Minor", num: toRoman(i+1), value: i+1, style: `style-minor ${s.style}`, icon: s.icon });
+                    deck.push({
+                        name: `${r} de ${s.label}`,
+                        type: "Minor", num: toRoman(i+1), value: i+1, // Value 1-14
+                        style: `style-minor ${s.style}`, icon: s.icon
+                    });
                 });
             });
         }
-        function toRoman(num) { if(num===0)return"0"; const roman={M:1000,CM:900,D:500,CD:400,C:100,XC:90,L:50,XL:40,X:10,IX:9,V:5,IV:4,I:1}; let str=''; for(let i of Object.keys(roman)){ let q=Math.floor(num/roman[i]); num-=q*roman[i]; str+=i.repeat(q); } return str; }
+        
+        function toRoman(num) {
+            if(num===0) return "0";
+            const roman = {M:1000,CM:900,D:500,CD:400,C:100,XC:90,L:50,XL:40,X:10,IX:9,V:5,IV:4,I:1};
+            let str = '';
+            for(let i of Object.keys(roman)){
+                let q = Math.floor(num/roman[i]);
+                num -= q*roman[i];
+                str += i.repeat(q);
+            }
+            return str;
+        }
+        
         buildDeck();
 
         async function startReading(q) {
-            document.getElementById('search-section').classList.add('hidden-section');
+            document.getElementById('consult-btn').style.display = 'none';
             document.getElementById('game-area').classList.remove('hidden');
             const container = document.getElementById('cards-container');
             container.innerHTML = '';
@@ -499,7 +553,7 @@
                 const r = deck[Math.floor(Math.random() * deck.length)];
                 if(!picked.includes(r)) picked.push(r);
             }
-            currentSpread = picked;
+            currentSpread = picked; // Save for calculation
 
             const positions = ["Pasado", "Presente", "Futuro"];
             picked.forEach((c, i) => {
@@ -508,12 +562,18 @@
                     <div class="card-wrapper" id="wrap-${i}">
                         <div class="tarot-card" id="card-${i}">
                             <div class="tarot-face tarot-back ${backClass}">
-                                <div class="back-logo">ASTRALIS</div>
+                                <div class="back-brand">ASTRALIS</div>
                             </div>
                             <div class="tarot-face tarot-front ${c.style}">
                                 <div class="card-header"><span class="card-num">${c.num}</span></div>
-                                <div class="card-body"><i class="main-icon fa-solid ${c.icon}"></i></div>
-                                <div class="card-footer"><div class="card-name">${c.name}</div><div class="astralis-mark">ASTRALIS</div></div>
+                                <div class="card-body">
+                                    <i class="main-icon fa-solid ${c.icon}"></i>
+                                    <div class="corner tl"></div><div class="corner tr"></div><div class="corner bl"></div><div class="corner br"></div>
+                                </div>
+                                <div class="card-footer">
+                                    <div class="card-name">${c.name}</div>
+                                    <div class="astralis-mark">ASTRALIS</div>
+                                </div>
                             </div>
                         </div>
                         <div class="card-label mt-4" id="lbl-${i}">${positions[i]}</div>
@@ -536,16 +596,20 @@
             const loading = document.getElementById('loading-oracle');
             const result = document.getElementById('result-box');
             const aiText = document.getElementById('ai-response');
+            
             loading.classList.remove('hidden');
             loading.scrollIntoView({ behavior: 'smooth', block: 'center' });
 
             const cardNames = cards.map(c => c.name).join(", ");
-            const prompt = `Actúa como Astra. Pregunta: "${q}". Cartas: ${cardNames} (Rider-Waite). 
-            ESTRUCTURA HTML OBLIGATORIA:
-            <p>Interpretación del Pasado con <span class="card-mention">${cards[0].name}</span>: [Texto...]</p>
-            <p>Interpretación del Presente con <span class="card-mention">${cards[1].name}</span>: [Texto...]</p>
-            <p>Interpretación del Futuro con <span class="card-mention">${cards[2].name}</span>: [Texto...]</p>
-            <div class="conclusion-box">Conclusión Mística: [Resumen]</div>`;
+            const prompt = `
+                Actúa como Astra, tarotista experta. Pregunta: "${q}". Cartas: ${cardNames} (Rider-Waite). 
+                ESTRUCTURA OBLIGATORIA HTML:
+                <p>Interpretación del Pasado con la carta <span class="card-mention">${cards[0].name}</span>: [Texto profundo...]</p>
+                <p>Interpretación del Presente con <span class="card-mention">${cards[1].name}</span>: [Texto profundo...]</p>
+                <p>Interpretación del Futuro con <span class="card-mention">${cards[2].name}</span>: [Texto profundo...]</p>
+                <div class="conclusion-box">Conclusión Mística: [Resumen final...]</div>
+                Usa un tono místico y serio.
+            `;
 
             try {
                 const res = await fetch(`https://text.pollinations.ai/${encodeURIComponent(prompt)}`);
@@ -557,21 +621,33 @@
             } catch(e) { console.error(e); }
         }
 
-        // --- CÁLCULO QUINTAESENCIA ---
+        // --- CÁLCULO QUINTAESENCIA (NUEVO) ---
         async function calculateQuintessence() {
             if(!currentSpread || currentSpread.length < 3) return;
+
+            // Lógica Matemática: Sumar valores
             let sum = currentSpread.reduce((acc, card) => acc + card.value, 0);
+            
+            // Reducción Teosófica (Si > 21, sumar dígitos)
+            // Ejemplo: 23 -> 2+3 = 5. 22 -> 2+2=4.
             while (sum > 21) {
                 const digits = sum.toString().split('').map(Number);
                 sum = digits.reduce((a, b) => a + b, 0);
             }
-            const quintCard = deck[sum]; // Arcano Mayor (0-21)
 
+            // Buscar la carta Arcano Mayor correspondiente (0-21)
+            // deck[0] a deck[21] son los arcanos mayores en orden
+            const quintCard = deck[sum]; 
+
+            // Mostrar Modal
             const modal = document.getElementById('quint-modal');
             const container = document.getElementById('quint-card-container');
+            const nameEl = document.getElementById('quint-name');
             const meaningEl = document.getElementById('quint-meaning');
             
             modal.style.display = 'flex';
+            
+            // Renderizar carta 3D sola
             container.innerHTML = `
                 <div class="tarot-card flipped" style="width:100%; height:100%; box-shadow:none;">
                     <div class="tarot-face tarot-front ${quintCard.style}" style="border-width:2px;">
@@ -581,28 +657,31 @@
                     </div>
                 </div>
             `;
-            document.getElementById('quint-name').innerText = quintCard.name;
             
-            const prompt = `Calculé la Quintaesencia del tarot y salió: ${quintCard.name}. Dame un resumen breve de qué significa esta carta como 'Alma de la Lectura'.`;
+            nameEl.innerText = quintCard.name;
+            meaningEl.innerText = "Conectando con el Alma...";
+
+            // Pedir resumen a la IA
+            const prompt = `Calculé la Quintaesencia del tarot y salió: ${quintCard.name}. Dame un resumen muy breve (2 frases) sobre qué significa esta carta como 'Alma de la Lectura'. Sé mística.`;
             try {
                 const res = await fetch(`https://text.pollinations.ai/${encodeURIComponent(prompt)}`);
-                meaningEl.innerText = await res.text();
+                const text = await res.text();
+                meaningEl.innerText = text;
             } catch(e) { meaningEl.innerText = "La energía oculta se revela."; }
         }
         
         function resetReading() {
              document.getElementById('result-box').style.display = 'none';
              document.getElementById('game-area').classList.add('hidden');
-             document.getElementById('search-section').classList.remove('hidden-section');
-             
              document.getElementById('user-question').value = '';
              document.getElementById('user-question').disabled = false;
-             
              const btn = document.getElementById('consult-btn');
              btn.style.display = 'block';
-             
+             // Reset variables
+             currentSpread = [];
              window.scrollTo({ top: 0, behavior: 'smooth' });
         }
+
     </script>
 </body>
 </html>
