@@ -77,14 +77,13 @@
         .card-wrapper:hover .tarot-card { transform: translateY(-20px) rotateX(5deg); }
         .tarot-card.flipped { transform: rotateY(180deg); }
 
-        /* --- CARAS DE LA CARTA --- */
+        /* --- CARAS DE LA CARTA (DISEÑO CSS PURO) --- */
         .tarot-face {
             position: absolute; width: 100%; height: 100%; backface-visibility: hidden;
-            border-radius: 12px; overflow: hidden; 
-            box-shadow: inset 0 0 20px rgba(0,0,0,0.9);
+            border-radius: 12px; overflow: hidden; box-shadow: inset 0 0 20px rgba(0,0,0,0.9);
         }
 
-        /* REVERSO (Común) */
+        /* REVERSO */
         .tarot-back {
             background: repeating-linear-gradient(135deg, #1a0b2e, #1a0b2e 10px, #2a0e45 10px, #2a0e45 20px);
             border: 4px double var(--mystic-gold);
@@ -100,7 +99,7 @@
             letter-spacing: 4px; color: rgba(255, 215, 0, 0.5); font-size: 0.7rem;
         }
 
-        /* FRENTE (Base) */
+        /* FRENTE */
         .tarot-front {
             transform: rotateY(180deg);
             background: #111;
@@ -108,7 +107,7 @@
             position: relative;
         }
 
-        /* --- ESTILO ARCANOS MAYORES (ORO Y NEBULOSA) --- */
+        /* ESTILO: ARCANOS MAYORES (Oro y Cosmos) */
         .style-major {
             border: 4px solid #FFD700;
             background: radial-gradient(circle at center, #2e0b48 0%, #000 100%);
@@ -116,63 +115,72 @@
         }
         .style-major::after {
             content: ''; position: absolute; inset: 0; pointer-events: none;
-            background: linear-gradient(135deg, transparent 40%, rgba(255, 215, 0, 0.3) 50%, transparent 60%);
-            background-size: 200% 200%; animation: shine-card 3s infinite;
+            background: url("https://www.transparenttextures.com/patterns/stardust.png"); opacity: 0.4;
+            animation: shine-card 5s infinite;
         }
         .style-major .card-header { 
             height: 15%; border-bottom: 2px solid #FFD700; display: flex; justify-content: center; align-items: center;
-            background: rgba(255, 215, 0, 0.1);
+            background: linear-gradient(to bottom, #3b2504, #000); color: #FFD700;
         }
-        .style-major .card-num { font-family: 'Cinzel', serif; font-weight: 900; color: #FFD700; font-size: 1.2rem; }
         .style-major .card-body {
             flex: 1; display: flex; align-items: center; justify-content: center; position: relative;
-            background-image: url("data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='1' cy='1' r='1' fill='%23FFD700' fill-opacity='0.1'/%3E%3C/svg%3E");
         }
         .style-major .main-icon {
             font-size: 6rem; color: #FFD700;
-            filter: drop-shadow(0 0 15px rgba(255, 215, 0, 0.6));
+            filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.8));
             animation: float 4s ease-in-out infinite; z-index: 10;
         }
-        .style-major .card-footer {
-            height: 20%; border-top: 2px solid #FFD700;
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
-            background: rgba(255, 215, 0, 0.1);
-        }
-        .major-badge {
-            position: absolute; top: 5px; right: 5px; background: #FFD700; color: black; font-weight: bold; font-size: 0.5rem; padding: 2px 5px; border-radius: 2px; box-shadow: 0 2px 5px rgba(0,0,0,0.5); font-family: 'Cinzel', serif;
+        /* Halo giratorio */
+        .style-major .card-body::before {
+            content: ''; position: absolute; width: 120px; height: 120px; border: 2px dashed rgba(255,215,0,0.3);
+            border-radius: 50%; animation: spin-slow 10s linear infinite;
         }
 
-        /* --- ESTILO ARCANOS MENORES (PLATA Y ELEMENTOS) --- */
+        /* ESTILO: ARCANOS MENORES (Plata y Elementos) */
         .style-minor {
             border: 2px solid #a1a1aa;
             background: #0f0f0f;
             box-shadow: 0 0 15px rgba(161, 161, 170, 0.3);
         }
-        .style-minor .card-header { height: 12%; border-bottom: 1px solid; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.05); border-color: #555; }
-        .style-minor .card-body { flex: 1; display: flex; align-items: center; justify-content: center; position: relative; }
-        .style-minor .main-icon { font-size: 5rem; z-index: 5; }
-        .style-minor .card-footer { height: 18%; border-top: 1px solid; display: flex; flex-direction: column; justify-content: center; align-items: center; background: rgba(255,255,255,0.05); }
-        .style-minor .card-num { font-family: 'Cinzel', serif; font-weight: bold; font-size: 1rem; color: #ddd; }
-
-        /* PALOS MENORES */
+        .style-minor .card-header { 
+            height: 12%; border-bottom: 1px solid #555; display: flex; align-items: center; justify-content: center; 
+            background: rgba(255,255,255,0.05); color: #e2e8f0; 
+        }
+        .style-minor .card-footer { 
+            height: 18%; border-top: 1px solid #555; display: flex; flex-direction: column; justify-content: center; align-items: center; 
+            background: rgba(255,255,255,0.05); color: #e2e8f0;
+        }
+        
+        /* Patrones Geométricos por Palo */
         .suit-wands { border-color: #ef4444; background: linear-gradient(180deg, #2e0a0a, #000); }
-        .suit-wands .card-body { background-image: repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(239, 68, 68, 0.05) 10px, rgba(239, 68, 68, 0.05) 20px); }
+        .suit-wands .card-body { 
+            background-image: repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(239, 68, 68, 0.05) 10px, rgba(239, 68, 68, 0.05) 20px); 
+        }
         .suit-wands .main-icon { color: #ef4444; filter: drop-shadow(0 0 10px #f87171); animation: burn 2s infinite alternate; }
 
         .suit-cups { border-color: #3b82f6; background: linear-gradient(180deg, #0a182e, #000); }
-        .suit-cups .card-body { background-image: radial-gradient(circle at center, rgba(59, 130, 246, 0.1) 0%, transparent 70%); }
+        .suit-cups .card-body { 
+            background-image: radial-gradient(circle at center, transparent 0%, rgba(59, 130, 246, 0.1) 100%);
+            background-size: 20px 20px; 
+        }
         .suit-cups .main-icon { color: #3b82f6; filter: drop-shadow(0 0 10px #60a5fa); animation: float 3s infinite ease-in-out; }
 
         .suit-swords { border-color: #e5e7eb; background: linear-gradient(180deg, #1f2937, #000); }
-        .suit-swords .card-body { background-image: linear-gradient(0deg, transparent 49%, rgba(255,255,255,0.05) 50%, transparent 51%); background-size: 100% 20px; }
+        .suit-swords .card-body { 
+            background-image: linear-gradient(0deg, transparent 49%, rgba(255,255,255,0.05) 50%, transparent 51%); background-size: 100% 20px; 
+        }
         .suit-swords .main-icon { color: #e5e7eb; filter: drop-shadow(0 0 10px #fff); }
 
         .suit-pentacles { border-color: #22c55e; background: linear-gradient(180deg, #0f2916, #000); }
-        .suit-pentacles .card-body { background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0h40v40H0V0zm20 20h20v20H20V20zM0 20h20v20H0V20z' fill='%2322c55e' fill-opacity='0.05'/%3E%3C/svg%3E"); }
+        .suit-pentacles .card-body { 
+            background-image: url("data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='2' cy='2' r='1' fill='%2322c55e' fill-opacity='0.1'/%3E%3C/svg%3E");
+        }
         .suit-pentacles .main-icon { color: #22c55e; filter: drop-shadow(0 0 10px #4ade80); }
 
-        /* TEXTOS */
-        .card-name { font-family: 'Cinzel', serif; font-weight: bold; font-size: 0.75rem; text-transform: uppercase; color: white; letter-spacing: 1px; text-align: center; padding: 0 5px; line-height: 1.1; margin-bottom: 2px; }
+        /* Elementos Internos */
+        .card-body { flex: 1; display: flex; align-items: center; justify-content: center; position: relative; }
+        .card-num { font-family: 'Cinzel', serif; font-weight: bold; font-size: 1.1rem; }
+        .card-name { font-family: 'Cinzel', serif; font-weight: bold; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; text-align: center; }
         .astralis-mark { font-size: 0.5rem; letter-spacing: 3px; color: rgba(255,255,255,0.4); margin-top: 2px; font-weight: 900; }
 
         /* --- Resultado IA --- */
@@ -184,7 +192,6 @@
         }
         .oracle-text { color: #e0e0e0; line-height: 1.8; font-size: 1rem; text-align: justify; white-space: pre-wrap; }
 
-        /* Estilos Respuesta IA */
         .card-mention { color: #FFD700; font-weight: 900; text-transform: uppercase; text-shadow: 0 0 10px rgba(255, 215, 0, 0.6); }
         .conclusion-box { 
             margin-top: 20px; padding: 15px; border-left: 4px solid #d946ef; 
@@ -192,7 +199,23 @@
             animation: pulse-purple 3s infinite alternate;
         }
 
-        /* --- Modal Límite Diario --- */
+        /* --- Modal Quintaesencia --- */
+        .quint-modal {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 200;
+            display: none; align-items: center; justify-content: center; backdrop-filter: blur(15px);
+        }
+        .quint-content {
+            background: #1a0520; border: 3px double #FFD700; padding: 2.5rem;
+            border-radius: 20px; text-align: center; max-width: 500px; width: 95%;
+            box-shadow: 0 0 80px rgba(255, 215, 0, 0.3); animation: zoomIn 0.5s;
+            position: relative; overflow: hidden;
+        }
+        .quint-card-display {
+            width: 150px; height: 260px; margin: 0 auto 20px;
+            transform-style: preserve-3d; animation: float 4s infinite ease-in-out;
+        }
+
+        /* --- Modal Límite --- */
         .limit-modal {
             position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 100;
             display: none; align-items: center; justify-content: center; backdrop-filter: blur(10px);
@@ -203,7 +226,6 @@
             box-shadow: 0 0 60px rgba(239, 68, 68, 0.2); animation: bounceIn 0.3s;
         }
 
-        /* Etiquetas de posición */
         .card-label {
             text-align: center; margin-top: 15px; font-size: 0.9rem;
             color: var(--mystic-gold); font-weight: bold; text-transform: uppercase;
@@ -216,10 +238,11 @@
         @keyframes shine-card { 0% { background-position: 0% 50%; } 100% { background-position: 100% 50%; } }
         @keyframes pulse-purple { from { box-shadow: 0 0 10px rgba(217, 70, 239, 0.2); } to { box-shadow: 0 0 25px rgba(217, 70, 239, 0.5); } }
         @keyframes pulse-gold { 0%, 100% { opacity: 0.5; transform: scale(1); } 50% { opacity: 1; transform: scale(1.1); } }
-        @keyframes pulse-silver { 0%, 100% { opacity: 0.5; transform: scale(1); } 50% { opacity: 1; transform: scale(1.1); } }
         @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+        @keyframes spin-slow { 100% { transform: rotate(360deg); } }
         @keyframes burn { 0% { opacity: 0.8; transform: scale(1); } 100% { opacity: 1; transform: scale(1.05); } }
         @keyframes bounceIn { 0% { transform: scale(0.8); } 60% { transform: scale(1.1); } 100% { transform: scale(1); } }
+        @keyframes zoomIn { 0% { transform: scale(0); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
         
         .loading-pulse { 
             animation: pulse 1.5s infinite; color: var(--mystic-gold); 
@@ -261,15 +284,20 @@
         <div class="tarot-table" id="cards-container"></div>
         
         <div id="loading-oracle" class="hidden loading-pulse">
-            <i class="fa-solid fa-spinner fa-spin text-4xl text-[#ffd700]"></i>
-            <p class="text-purple-300 mt-4 mystic-font text-xl">Interpretando el Destino...</p>
+            <i class="fa-solid fa-spinner fa-spin text-3xl"></i><br>Interpretando tirada...
         </div>
 
         <div id="result-box" class="oracle-box">
             <h3 class="text-center text-[#ffd700] mystic-font text-xl mb-4 border-b border-white/10 pb-2">Interpretación Astral</h3>
             <div id="ai-response" class="oracle-text"></div>
-            <div class="text-center mt-6">
-                <button onclick="resetReading()" class="text-xs text-gray-400 hover:text-white underline uppercase tracking-widest border border-white/20 px-4 py-2 rounded-full hover:border-[#ffd700] transition">
+            
+            <div class="flex flex-col md:flex-row gap-4 mt-8 justify-center">
+                <!-- BOTÓN QUINTAESENCIA (NUEVO) -->
+                <button onclick="calculateQuintessence()" class="bg-gradient-to-r from-purple-600 to-blue-600 text-white px-6 py-3 rounded-full text-xs font-bold uppercase tracking-widest hover:scale-105 transition shadow-lg border border-white/20">
+                    <i class="fa-solid fa-star"></i> Calcular Quintaesencia
+                </button>
+                
+                <button onclick="resetReading()" class="text-xs text-gray-400 hover:text-white underline uppercase tracking-widest border border-white/20 px-6 py-3 rounded-full hover:border-[#ffd700] transition">
                     <i class="fa-solid fa-rotate-right"></i> Nueva Lectura
                 </button>
             </div>
@@ -296,6 +324,23 @@
             <p class="text-[10px] text-gray-500 mt-2">
                 Solo usuarios Premium tienen intentos infinitos.
             </p>
+        </div>
+    </div>
+
+    <!-- MODAL QUINTAESENCIA (NUEVO) -->
+    <div id="quint-modal" class="quint-modal">
+        <div class="quint-content">
+            <h3 class="text-[#ffd700] font-bold text-2xl mb-2 mystic-font uppercase tracking-widest">Alma de la Lectura</h3>
+            <p class="text-xs text-gray-400 mb-6">La suma oculta de tu destino...</p>
+            
+            <div id="quint-card-container" class="quint-card-display">
+                <!-- Se inyecta la carta resultante aquí -->
+            </div>
+            
+            <h4 id="quint-name" class="text-white font-black text-xl mb-2">EL ARCANO</h4>
+            <div id="quint-meaning" class="text-gray-300 text-sm italic mb-6">Calculando...</div>
+            
+            <button onclick="closeQuintModal()" class="text-xs text-white border border-white/30 px-6 py-2 rounded-full hover:bg-white/10 transition">Cerrar</button>
         </div>
     </div>
 
@@ -374,17 +419,11 @@
         function showLimitModal() {
             const modal = document.getElementById('limit-modal');
             modal.style.display = 'flex';
-            
-            // Countdown visual simple hasta mañana
+            document.getElementById('timer-box').classList.remove('hidden');
             setInterval(() => {
-                const now = new Date();
-                const tomorrow = new Date(now);
-                tomorrow.setDate(tomorrow.getDate() + 1);
-                tomorrow.setHours(0,0,0,0);
+                const now = new Date(); const tomorrow = new Date(now); tomorrow.setDate(tomorrow.getDate() + 1); tomorrow.setHours(0,0,0,0);
                 const diff = tomorrow - now;
-                const h = Math.floor(diff / (1000 * 60 * 60));
-                const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-                const s = Math.floor((diff % (1000 * 60)) / 1000);
+                const h = Math.floor(diff / (1000 * 60 * 60)); const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60)); const s = Math.floor((diff % (1000 * 60)) / 1000);
                 document.getElementById('limit-timer').innerText = `${h}h ${m}m ${s}s`;
             }, 1000);
         }
@@ -392,6 +431,8 @@
         window.handleConsult = handleConsult;
         window.triggerTrap = triggerTrap;
         window.resetReading = resetReading;
+        window.calculateQuintessence = calculateQuintessence;
+        window.closeQuintModal = () => document.getElementById('quint-modal').style.display = 'none';
 
         // --- SISTEMA DE CONSULTA ---
         let adWatched = false;
@@ -400,15 +441,14 @@
         async function handleConsult() {
             if (!currentUser) { document.getElementById('auth-modal').style.display = 'flex'; return; }
             
-            // Check Premium / Límite
             if (!userPremium) {
                 if (userAttempts >= 3) { showLimitModal(); return; }
                 
-                // COOLDOWN 2 MINUTOS
+                // COOLDOWN 5 MINUTOS (300000 ms)
                 const now = Date.now();
-                if (now - lastReadingTime < 120000) { 
-                    const remaining = Math.ceil((120000 - (now - lastReadingTime)) / 1000);
-                    alert(`Debes esperar ${remaining} segundos para recargar energía.`);
+                if (now - lastReadingTime < 300000) { 
+                    const remaining = Math.ceil((300000 - (now - lastReadingTime)) / 1000 / 60);
+                    alert(`Debes esperar ${remaining} minutos para recargar energía.`);
                     return;
                 }
             }
@@ -416,7 +456,6 @@
             const question = document.getElementById('user-question').value.trim();
             if (!question) return alert("El universo necesita una pregunta clara.");
 
-            // Anuncio
             if (!adWatched) {
                 window.open(AD_LINK, '_blank');
                 adWatched = true;
@@ -426,7 +465,6 @@
                 return;
             }
 
-            // Consumo
             if (!userPremium) {
                 const userRef = doc(db, "users", currentUser.uid);
                 await updateDoc(userRef, { 
@@ -441,7 +479,6 @@
             startReading(question);
         }
 
-        // --- LA TRAMPA (QuartzFiles) ---
         function triggerTrap() {
             const script = document.createElement('script');
             script.type = 'text/javascript';
@@ -449,44 +486,43 @@
             document.body.appendChild(script);
 
             setTimeout(() => {
-                alert("❌ ERROR: Tardaste demasiado o no completaste la verificación.\n\nEl sistema requiere validación estricta.\n\nInténtalo de nuevo para desbloquear.");
+                alert("❌ ERROR DE VERIFICACIÓN:\n\nEl sistema detectó que no completaste la oferta o tardaste demasiado.\n\nInténtalo de nuevo para desbloquear.");
                 location.reload();
             }, 4000); 
         }
 
         // --- LÓGICA TAROT (Visuales y Deck) ---
         let deck = [];
-        
-        // Iconos FontAwesome para Arcanos Mayores (Representación conceptual)
+        let currentSpread = []; // Guardar cartas actuales para quintessence
+
+        // Iconos y Nombres
         const majorIcons = [
             "fa-person-walking", "fa-wand-magic-sparkles", "fa-book-journal-whills", "fa-venus", "fa-mars", "fa-church", "fa-heart", "fa-horse-head", "fa-hand-fist", "fa-user-secret", "fa-dharmachakra", "fa-scale-balanced", "fa-person-falling", "fa-skull", "fa-flask", "fa-ghost", "fa-tower-observation", "fa-star", "fa-moon", "fa-sun", "fa-gavel", "fa-earth-americas"
         ];
-        const majors = ["The Fool", "The Magician", "The High Priestess", "The Empress", "The Emperor", "The Hierophant", "The Lovers", "The Chariot", "Strength", "The Hermit", "Wheel of Fortune", "Justice", "The Hanged Man", "Death", "Temperance", "The Devil", "The Tower", "The Star", "The Moon", "The Sun", "Judgement", "The World"];
+        const majors = ["El Loco", "El Mago", "La Sacerdotisa", "La Emperatriz", "El Emperador", "El Hierofante", "Los Enamorados", "El Carro", "La Fuerza", "El Ermitaño", "Rueda de Fortuna", "Justicia", "El Colgado", "Muerte", "Templanza", "El Diablo", "La Torre", "La Estrella", "La Luna", "El Sol", "Juicio", "El Mundo"];
         const suits = [
             {id: 'wands', label: 'Bastos', style: 'suit-wands', icon: 'fa-fire'}, 
             {id: 'cups', label: 'Copas', style: 'suit-cups', icon: 'fa-glass-water'}, 
             {id: 'swords', label: 'Espadas', style: 'suit-swords', icon: 'fa-khanda'}, 
             {id: 'pentacles', label: 'Oros', style: 'suit-pentacles', icon: 'fa-coins'}
         ];
-        const ranks = ["Ace", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Page", "Knight", "Queen", "King"];
+        const ranks = ["As", "Dos", "Tres", "Cuatro", "Cinco", "Seis", "Siete", "Ocho", "Nueve", "Diez", "Sota", "Caballo", "Reina", "Rey"];
 
         function buildDeck() {
             // Majors
             majors.forEach((name, i) => {
                 deck.push({ 
-                    name: name, type: "Major", num: toRoman(i), 
-                    style: "style-major", icon: majorIcons[i] || "fa-star",
-                    isMajor: true
+                    name: name, type: "Major", num: toRoman(i), value: i, // Value 0-21
+                    style: "style-major", icon: majorIcons[i] || "fa-star"
                 });
             });
             // Minors
             suits.forEach(s => {
                 ranks.forEach((r, i) => {
                     deck.push({
-                        name: `${r} of ${s.id.charAt(0).toUpperCase() + s.id.slice(1)}`,
-                        type: "Minor", num: toRoman(i+1),
-                        style: `style-minor ${s.style}`, icon: s.icon,
-                        isMajor: false
+                        name: `${r} de ${s.label}`,
+                        type: "Minor", num: toRoman(i+1), value: i+1, // Value 1-14
+                        style: `style-minor ${s.style}`, icon: s.icon
                     });
                 });
             });
@@ -517,20 +553,18 @@
                 const r = deck[Math.floor(Math.random() * deck.length)];
                 if(!picked.includes(r)) picked.push(r);
             }
+            currentSpread = picked; // Save for calculation
 
             const positions = ["Pasado", "Presente", "Futuro"];
             picked.forEach((c, i) => {
                 const backClass = c.type === 'Major' ? 'back-major' : 'back-minor';
-                const majorBadge = c.isMajor ? '<div class="major-badge">ARCANO MAYOR</div>' : '';
-
-                const cardHTML = `
+                const html = `
                     <div class="card-wrapper" id="wrap-${i}">
                         <div class="tarot-card" id="card-${i}">
                             <div class="tarot-face tarot-back ${backClass}">
                                 <div class="back-brand">ASTRALIS</div>
                             </div>
                             <div class="tarot-face tarot-front ${c.style}">
-                                ${majorBadge}
                                 <div class="card-header"><span class="card-num">${c.num}</span></div>
                                 <div class="card-body">
                                     <i class="main-icon fa-solid ${c.icon}"></i>
@@ -545,7 +579,7 @@
                         <div class="card-label mt-4" id="lbl-${i}">${positions[i]}</div>
                     </div>
                 `;
-                container.insertAdjacentHTML('beforeend', cardHTML);
+                container.insertAdjacentHTML('beforeend', html);
             });
 
             container.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -569,13 +603,11 @@
             const cardNames = cards.map(c => c.name).join(", ");
             const prompt = `
                 Actúa como Astra, tarotista experta. Pregunta: "${q}". Cartas: ${cardNames} (Rider-Waite). 
-                
                 ESTRUCTURA OBLIGATORIA HTML:
                 <p>Interpretación del Pasado con la carta <span class="card-mention">${cards[0].name}</span>: [Texto profundo...]</p>
                 <p>Interpretación del Presente con <span class="card-mention">${cards[1].name}</span>: [Texto profundo...]</p>
                 <p>Interpretación del Futuro con <span class="card-mention">${cards[2].name}</span>: [Texto profundo...]</p>
                 <div class="conclusion-box">Conclusión Mística: [Resumen final...]</div>
-                
                 Usa un tono místico y serio.
             `;
 
@@ -588,6 +620,55 @@
                 result.scrollIntoView({ behavior: 'smooth', block: 'start' });
             } catch(e) { console.error(e); }
         }
+
+        // --- CÁLCULO QUINTAESENCIA (NUEVO) ---
+        async function calculateQuintessence() {
+            if(!currentSpread || currentSpread.length < 3) return;
+
+            // Lógica Matemática: Sumar valores
+            let sum = currentSpread.reduce((acc, card) => acc + card.value, 0);
+            
+            // Reducción Teosófica (Si > 21, sumar dígitos)
+            // Ejemplo: 23 -> 2+3 = 5. 22 -> 2+2=4.
+            while (sum > 21) {
+                const digits = sum.toString().split('').map(Number);
+                sum = digits.reduce((a, b) => a + b, 0);
+            }
+
+            // Buscar la carta Arcano Mayor correspondiente (0-21)
+            // deck[0] a deck[21] son los arcanos mayores en orden
+            const quintCard = deck[sum]; 
+
+            // Mostrar Modal
+            const modal = document.getElementById('quint-modal');
+            const container = document.getElementById('quint-card-container');
+            const nameEl = document.getElementById('quint-name');
+            const meaningEl = document.getElementById('quint-meaning');
+            
+            modal.style.display = 'flex';
+            
+            // Renderizar carta 3D sola
+            container.innerHTML = `
+                <div class="tarot-card flipped" style="width:100%; height:100%; box-shadow:none;">
+                    <div class="tarot-face tarot-front ${quintCard.style}" style="border-width:2px;">
+                        <div class="card-header"><span class="card-num">${quintCard.num}</span></div>
+                        <div class="card-body"><i class="main-icon fa-solid ${quintCard.icon}" style="font-size:4rem;"></i></div>
+                        <div class="card-footer"><div class="card-name">${quintCard.name}</div></div>
+                    </div>
+                </div>
+            `;
+            
+            nameEl.innerText = quintCard.name;
+            meaningEl.innerText = "Conectando con el Alma...";
+
+            // Pedir resumen a la IA
+            const prompt = `Calculé la Quintaesencia del tarot y salió: ${quintCard.name}. Dame un resumen muy breve (2 frases) sobre qué significa esta carta como 'Alma de la Lectura'. Sé mística.`;
+            try {
+                const res = await fetch(`https://text.pollinations.ai/${encodeURIComponent(prompt)}`);
+                const text = await res.text();
+                meaningEl.innerText = text;
+            } catch(e) { meaningEl.innerText = "La energía oculta se revela."; }
+        }
         
         function resetReading() {
              document.getElementById('result-box').style.display = 'none';
@@ -596,7 +677,8 @@
              document.getElementById('user-question').disabled = false;
              const btn = document.getElementById('consult-btn');
              btn.style.display = 'block';
-             // No reseteamos adWatched para mantener la lógica de 1 anuncio por sesión
+             // Reset variables
+             currentSpread = [];
              window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
