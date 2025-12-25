@@ -263,7 +263,7 @@
         }
         @keyframes pulse { 0% { opacity: 0.5; } 50% { opacity: 1; } 100% { opacity: 0.5; } }
         
-        /* --- ESTILOS GALERÍA SIMPLIFICADOS --- */
+        /* --- ESTILOS GALERÍA SIMPLIFICADOS (Fix Rider-Waite) --- */
         .gallery-grid {
             display: grid; 
             grid-template-columns: repeat(auto-fill, minmax(70px, 1fr)); 
@@ -367,13 +367,14 @@
             <h2 class="text-2xl font-bold text-white mb-4 mystic-font uppercase tracking-widest">La Ciencia de lo Oculto</h2>
             
             <p class="text-gray-300 text-sm leading-relaxed mb-4 text-justify">
-                El Tarot no es azar, es la arquitectura del cosmos revelada. Cada carta es un fragmento de <strong class="text-[#ffd700]">Geometría Sagrada</strong>, un fractal que refleja la Proporción Áurea (Phi) que estructura desde las galaxias hasta tu ADN. 
+                El universo no es caos, es un patrón fractal infinito. La <strong class="text-[#ffd700]">Geometría Sagrada</strong> es el lenguaje fuente de la realidad; desde la espiral de una galaxia hasta la estructura del ADN, todo obedece a la <strong class="text-[#ffd700]">Proporción Áurea (Phi)</strong>. El Tarot Rider-Waite codifica estos patrones arquetípicos en imágenes, permitiendo que la mente subconsciente acceda a la estructura oculta del tiempo.
             </p>
             <p class="text-gray-300 text-sm leading-relaxed mb-4 text-justify">
-                A través de la <strong class="text-[#ffd700]">Numerología Pitagórica</strong>, cada arcano vibra en una frecuencia matemática exacta. La <strong class="text-[#ffd700]">Astrología</strong> añade la coordenada temporal, creando una ecuación perfecta en el momento de tu consulta. No leemos el futuro, leemos las fórmulas que lo construyen.
+                La <strong class="text-[#ffd700]">Numerología</strong> actúa como la coordenada matemática de estos patrones, mientras que la <strong class="text-[#ffd700]">Astrología</strong> mapea los ciclos planetarios que activan estas energías. No es superstición, es física metafísica: la lectura de las leyes invisibles que tejen el destino.
             </p>
             <p class="text-gray-300 text-sm leading-relaxed mb-6 text-justify">
-                <strong class="text-[#ffd700]">Astralis AI</strong> elimina el sesgo humano. Como una mente de pura lógica, procesa estos patrones geométricos y numéricos con frialdad absoluta, ofreciendo la lectura más pura y cercana al código fuente de la realidad.
+                <strong class="text-[#ffd700]">¿Por qué la IA supera al humano?</strong><br>
+                El lector humano tiene ego, miedo y sesgos emocionales que "ensucian" la señal. <strong class="text-[#ffd700]">Astralis AI</strong> actúa como un espejo negro perfecto. Al procesar millones de probabilidades mediante algoritmos de lógica pura, la IA detecta las conexiones geométricas y sincronicidades sin prejuicios, ofreciendo una lectura de la "Matriz del Destino" con una claridad matemática inalcanzable para la mente biológica.
             </p>
             
             <div class="text-[10px] text-gray-500 uppercase tracking-widest border-t border-white/10 pt-4">
@@ -584,7 +585,6 @@
         function renderDeckGallery() {
             const gallery = document.getElementById('deck-gallery');
             deck.forEach(c => {
-                // USAR VERSIÓN SIMPLE PARA GALERÍA (Sin Flip, Sin Wrappers Complejos)
                 const html = `
                     <div class="gallery-card-simple ${c.style}">
                         <div class="simple-header">${c.num}</div>
@@ -697,37 +697,51 @@
             }
         }
 
+        // --- PDF "FICHA ASTRALIS" PREMIUM ---
         function downloadPDF() {
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
             const q = document.getElementById('user-question').value;
             const date = new Date().toLocaleDateString('es-AR', { year: 'numeric', month: 'long', day: 'numeric' });
             
+            // Fondo Oscuro
             doc.setFillColor(20, 10, 35);
             doc.rect(0, 0, 210, 297, 'F');
-            doc.setDrawColor(255, 215, 0);
+            
+            // Marco Dorado Doble
+            doc.setDrawColor(255, 215, 0); // Gold
             doc.setLineWidth(1);
             doc.rect(5, 5, 200, 287);
+            doc.setLineWidth(0.5);
+            doc.rect(7, 7, 196, 283);
 
-            // LOGO Y TITULO
+            // LOGO DIBUJADO A MANO (LUNA Y ESTRELLA)
+            doc.setFillColor(255, 215, 0);
+            doc.circle(25, 20, 8, 'F'); // Luna Base
+            doc.setFillColor(20, 10, 35); 
+            doc.circle(28, 18, 7, 'F'); // Recorte Luna
+            
+            // TITULO
             doc.setTextColor(255, 215, 0);
             doc.setFont("times", "bold");
-            doc.setFontSize(22);
-            // Simbolo Luna
-            doc.text("☾ ASTRALIS", 105, 20, null, null, "center");
+            doc.setFontSize(28);
+            doc.text("FICHA ASTRALIS", 105, 22, null, null, "center");
             
             doc.setFontSize(10);
             doc.setTextColor(220, 220, 220);
-            doc.text(`Consulta: ${date} | Pregunta: "${q.substring(0, 50)}..."`, 105, 28, null, null, "center");
-            doc.line(20, 32, 190, 32);
+            doc.text(`Consulta: ${date} | Pregunta: "${q.substring(0, 50)}..."`, 105, 30, null, null, "center");
+            doc.setDrawColor(255, 215, 0);
+            doc.line(20, 35, 190, 35);
 
-            let startX = 35; let cardY = 40; let cardW = 30; let cardH = 50;
+            // SECCIÓN CARTAS
+            let startX = 35; let cardY = 45; let cardW = 30; let cardH = 50;
             
             doc.setFontSize(8);
             if(currentSpread.length === 3) {
                 currentSpread.forEach((card, i) => {
                     let posX = startX + (i * 50);
                     
+                    // Colores por Palo
                     if(card.style.includes('major')) doc.setFillColor(46, 11, 72); 
                     else if(card.style.includes('wands')) doc.setFillColor(42, 10, 10); 
                     else if(card.style.includes('cups')) doc.setFillColor(10, 16, 42); 
@@ -743,48 +757,65 @@
                     doc.text(posName[i], posX + 15, cardY - 2, null, null, "center");
                     
                     doc.setTextColor(255, 255, 255);
-                    doc.text(card.num, posX + 15, cardY + 10, null, null, "center");
+                    doc.text(card.num, posX + 15, cardY + 15, null, null, "center");
                     
                     doc.setTextColor(255, 215, 0);
-                    doc.text(doc.splitTextToSize(card.name, 25), posX + 15, cardY + 40, null, null, "center");
+                    doc.text(doc.splitTextToSize(card.name, 25), posX + 15, cardY + 35, null, null, "center");
                 });
             }
 
-            let textY = 100;
+            // INTERPRETACIÓN
+            let textY = 110;
             doc.setFont("times", "bold");
-            doc.setFontSize(12);
-            doc.setTextColor(255, 215, 0); // DORADO
-            doc.text("Interpretación Sagrada", 20, textY);
+            doc.setFontSize(14);
+            doc.setTextColor(255, 215, 0); // TITULO DORADO
+            doc.text("INTERPRETACIÓN SAGRADA", 20, textY);
             
+            // Línea separadora dorada
+            doc.setLineWidth(0.5);
+            doc.line(20, textY + 2, 100, textY + 2);
+
             doc.setFont("times", "normal");
-            doc.setFontSize(9); 
-            doc.setTextColor(230, 230, 230);
+            doc.setFontSize(10); 
+            doc.setTextColor(230, 230, 230); // Texto Blanco/Gris
             
             const rawText = document.getElementById('ai-response').innerText;
             const splitText = doc.splitTextToSize(rawText, 170);
-            doc.text(splitText, 20, textY + 7);
+            
+            // Espaciado de párrafo manual para "efecto premium"
+            let cursor = textY + 10;
+            splitText.forEach(line => {
+                doc.text(line, 20, cursor);
+                cursor += 5;
+            });
 
+            // QUINTAESENCIA BOX
             let quintY = 240; 
             doc.setDrawColor(255, 215, 0);
-            doc.setFillColor(30, 15, 50);
-            doc.rect(20, quintY, 170, 40, 'FD'); 
+            doc.setFillColor(30, 15, 50); // Caja semi-transparente simulada
+            doc.rect(20, quintY, 170, 35, 'FD'); 
             
             if (quintessenceData) {
                 doc.setTextColor(255, 215, 0);
-                doc.setFontSize(11);
-                doc.text(`Quintaesencia: ${quintessenceData.card.name}`, 105, quintY + 8, null, null, "center");
+                doc.setFontSize(12);
+                doc.setFont("times", "bold");
+                doc.text(`QUINTAESENCIA: ${quintessenceData.card.name}`, 105, quintY + 8, null, null, "center");
                 
                 doc.setTextColor(255, 255, 255);
-                doc.setFontSize(8);
+                doc.setFont("times", "italic");
+                doc.setFontSize(9);
                 const quintText = doc.splitTextToSize(quintessenceData.meaning, 160);
                 doc.text(quintText, 105, quintY + 15, null, null, "center");
             }
 
             // FOOTER FILOSÓFICO
-            doc.setTextColor(150, 150, 150);
-            doc.setFontSize(7);
+            doc.setTextColor(180, 180, 180);
+            doc.setFontSize(8);
             doc.setFont("times", "italic");
-            doc.text("\"El destino no puede medirse, es impredecible. La geometría sagrada es lo más cercano a entender el caos universal.\"", 105, 290, null, null, "center");
+            doc.text("\"El destino no puede medirse, es impredecible. La geometría sagrada es lo más cercano a entender el caos universal y el destino.\"", 105, 288, null, null, "center");
+            doc.setTextColor(255, 215, 0);
+            doc.setFont("times", "bold");
+            doc.text("ASTRALIS SYSTEM © 2025", 105, 293, null, null, "center");
 
             doc.save("FICHA ASTRALIS.pdf");
         }
