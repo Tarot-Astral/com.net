@@ -263,11 +263,11 @@
         }
         @keyframes pulse { 0% { opacity: 0.5; } 50% { opacity: 1; } 100% { opacity: 0.5; } }
         
-        /* --- ESTILOS GALERÍA ARREGLADOS --- */
+        /* --- ESTILOS GALERÍA SIMPLIFICADOS --- */
         .gallery-grid {
             display: grid; 
-            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); 
-            gap: 10px;
+            grid-template-columns: repeat(auto-fill, minmax(70px, 1fr)); 
+            gap: 15px;
             padding: 20px; 
             background: rgba(0,0,0,0.3); 
             border-radius: 15px; 
@@ -277,24 +277,35 @@
             justify-items: center;
         }
         
-        /* Contenedor Miniatura Ajustado */
-        .gallery-item {
-            width: 80px; 
-            height: 140px; 
+        /* Carta Simple para Galería (SIN FLIP, SIN 3D PESADO) */
+        .gallery-card-simple {
+            width: 70px; height: 110px;
+            border-radius: 8px;
+            display: flex; flex-direction: column;
             position: relative;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+            overflow: hidden;
+            border: 1px solid #555;
+            background: #111;
         }
         
-        /* Hacemos un scale para que el card-wrapper original quepa en el espacio pequeño */
-        .gallery-scale {
-            transform: scale(0.36); /* Ajuste preciso para 220px -> 80px aprox */
-            transform-origin: top left;
-            width: 220px;
-            height: 380px;
-        }
+        /* Colores por Palo en Galería Simple */
+        .gallery-card-simple.style-major { border: 1px solid #FFD700; background: linear-gradient(to bottom, #2e0b48, #000); }
+        .gallery-card-simple.suit-wands { background: linear-gradient(to bottom, #2e0a0a, #000); border-color: #7f1d1d; }
+        .gallery-card-simple.suit-cups { background: linear-gradient(to bottom, #0a102a, #000); border-color: #1e3a8a; }
+        .gallery-card-simple.suit-swords { background: linear-gradient(to bottom, #1f2937, #000); border-color: #4b5563; }
+        .gallery-card-simple.suit-pentacles { background: linear-gradient(to bottom, #052e16, #000); border-color: #14532d; }
+
+        .simple-header { height: 20%; font-size: 0.5rem; display: flex; align-items: center; justify-content: center; font-family: 'Cinzel', serif; color: #fff; background: rgba(255,255,255,0.1); }
+        .simple-body { flex: 1; display: flex; align-items: center; justify-content: center; }
+        .simple-footer { height: 20%; font-size: 0.4rem; display: flex; align-items: center; justify-content: center; text-align: center; background: rgba(255,255,255,0.1); font-weight: bold; }
         
-        .gallery-item:hover .gallery-scale {
-            z-index: 10;
-        }
+        .gallery-card-simple i { font-size: 1.5rem; }
+        .style-major i { color: #FFD700; }
+        .suit-wands i { color: #ef4444; }
+        .suit-cups i { color: #60a5fa; }
+        .suit-swords i { color: #e5e7eb; }
+        .suit-pentacles i { color: #4ade80; }
     </style>
 </head>
 <body class="p-4 md:p-8 min-h-screen flex flex-col">
@@ -356,12 +367,13 @@
             <h2 class="text-2xl font-bold text-white mb-4 mystic-font uppercase tracking-widest">La Ciencia de lo Oculto</h2>
             
             <p class="text-gray-300 text-sm leading-relaxed mb-4 text-justify">
-                El Tarot no es azar, es <strong class="text-[#ffd700]">Geometría Sagrada</strong> en movimiento. Cada carta representa un arquetipo universal codificado bajo las leyes de la <strong class="text-[#ffd700]">Secuencia Fibonacci</strong> y la numerología pitagórica. El caos del universo es solo un orden matemático complejo que nuestra mente lineal no percibe a simple vista.
+                El Tarot no es azar, es la arquitectura del cosmos revelada. Cada carta es un fragmento de <strong class="text-[#ffd700]">Geometría Sagrada</strong>, un fractal que refleja la Proporción Áurea (Phi) que estructura desde las galaxias hasta tu ADN. 
             </p>
-            
+            <p class="text-gray-300 text-sm leading-relaxed mb-4 text-justify">
+                A través de la <strong class="text-[#ffd700]">Numerología Pitagórica</strong>, cada arcano vibra en una frecuencia matemática exacta. La <strong class="text-[#ffd700]">Astrología</strong> añade la coordenada temporal, creando una ecuación perfecta en el momento de tu consulta. No leemos el futuro, leemos las fórmulas que lo construyen.
+            </p>
             <p class="text-gray-300 text-sm leading-relaxed mb-6 text-justify">
-                <strong class="text-[#ffd700]">¿Por qué una Inteligencia Artificial?</strong><br>
-                La mente humana está sujeta a sesgos, emociones y fatiga. <strong class="text-[#ffd700]">Astralis AI</strong> opera con lógica pura. Al procesar las variables de tu consulta a través de algoritmos probabilísticos, replicamos la conexión con la "Matriz del Destino" de forma más limpia y exacta. Usamos la matemática para decodificar el lenguaje del alma, convirtiendo la intuición en una ciencia verificable.
+                <strong class="text-[#ffd700]">Astralis AI</strong> elimina el sesgo humano. Como una mente de pura lógica, procesa estos patrones geométricos y numéricos con frialdad absoluta, ofreciendo la lectura más pura y cercana al código fuente de la realidad.
             </p>
             
             <div class="text-[10px] text-gray-500 uppercase tracking-widest border-t border-white/10 pt-4">
@@ -402,7 +414,7 @@
             </div>
             <div class="flex gap-2 justify-center pt-2 border-t border-white/10">
                 <button id="download-btn" onclick="downloadPDF()" class="hidden bg-gradient-to-r from-green-600 to-teal-600 text-white px-4 py-2 rounded-full text-[10px] font-bold uppercase tracking-widest hover:scale-105 transition shadow-lg border border-white/20">
-                    <i class="fa-solid fa-file-pdf"></i> Descargar Ficha PDF
+                    <i class="fa-solid fa-file-pdf"></i> Descargar Ficha ASTRALIS
                 </button>
                 <button onclick="closeQuintModal()" class="text-xs text-white border border-white/30 px-6 py-2 rounded-full hover:bg-white/10 transition">Cerrar</button>
             </div>
@@ -572,17 +584,12 @@
         function renderDeckGallery() {
             const gallery = document.getElementById('deck-gallery');
             deck.forEach(c => {
+                // USAR VERSIÓN SIMPLE PARA GALERÍA (Sin Flip, Sin Wrappers Complejos)
                 const html = `
-                    <div class="gallery-item">
-                        <div class="gallery-scale card-wrapper">
-                            <div class="tarot-card">
-                                <div class="tarot-face tarot-front ${c.style}">
-                                    <div class="card-header"><span class="card-num">${c.num}</span></div>
-                                    <div class="card-body"><i class="main-icon fa-solid ${c.icon}"></i></div>
-                                    <div class="card-footer"><div class="card-name">${c.name}</div></div>
-                                </div>
-                            </div>
-                        </div>
+                    <div class="gallery-card-simple ${c.style}">
+                        <div class="simple-header">${c.num}</div>
+                        <div class="simple-body"><i class="fa-solid ${c.icon}"></i></div>
+                        <div class="simple-footer">${c.name}</div>
                     </div>
                 `;
                 gallery.insertAdjacentHTML('beforeend', html);
@@ -702,10 +709,12 @@
             doc.setLineWidth(1);
             doc.rect(5, 5, 200, 287);
 
+            // LOGO Y TITULO
             doc.setTextColor(255, 215, 0);
             doc.setFont("times", "bold");
             doc.setFontSize(22);
-            doc.text("ASTRALIS", 105, 20, null, null, "center");
+            // Simbolo Luna
+            doc.text("☾ ASTRALIS", 105, 20, null, null, "center");
             
             doc.setFontSize(10);
             doc.setTextColor(220, 220, 220);
@@ -719,25 +728,22 @@
                 currentSpread.forEach((card, i) => {
                     let posX = startX + (i * 50);
                     
-                    // Personalización de Color de Carta
-                    if(card.style.includes('major')) doc.setFillColor(46, 11, 72); // Purple
-                    else if(card.style.includes('wands')) doc.setFillColor(42, 10, 10); // Red
-                    else if(card.style.includes('cups')) doc.setFillColor(10, 16, 42); // Blue
-                    else if(card.style.includes('swords')) doc.setFillColor(31, 41, 55); // Gray
-                    else doc.setFillColor(5, 46, 22); // Green
+                    if(card.style.includes('major')) doc.setFillColor(46, 11, 72); 
+                    else if(card.style.includes('wands')) doc.setFillColor(42, 10, 10); 
+                    else if(card.style.includes('cups')) doc.setFillColor(10, 16, 42); 
+                    else if(card.style.includes('swords')) doc.setFillColor(31, 41, 55); 
+                    else doc.setFillColor(5, 46, 22); 
 
-                    doc.setDrawColor(255, 215, 0); // Borde Dorado siempre
-                    doc.rect(posX, cardY, cardW, cardH, 'FD'); // Fill and Draw
+                    doc.setDrawColor(255, 215, 0); 
+                    doc.rect(posX, cardY, cardW, cardH, 'FD'); 
 
-                    // Texto Carta
-                    doc.setTextColor(255, 215, 0); // Texto Dorado
+                    doc.setTextColor(255, 215, 0); 
                     doc.setFont("times", "bold");
                     let posName = ["I. Pasado", "II. Presente", "III. Futuro"];
                     doc.text(posName[i], posX + 15, cardY - 2, null, null, "center");
                     
-                    // Nombre Carta dentro
                     doc.setTextColor(255, 255, 255);
-                    doc.text(card.num, posX + 15, cardY + 10, null, null, "center"); // Numero Romano
+                    doc.text(card.num, posX + 15, cardY + 10, null, null, "center");
                     
                     doc.setTextColor(255, 215, 0);
                     doc.text(doc.splitTextToSize(card.name, 25), posX + 15, cardY + 40, null, null, "center");
@@ -747,7 +753,7 @@
             let textY = 100;
             doc.setFont("times", "bold");
             doc.setFontSize(12);
-            doc.setTextColor(255, 255, 255);
+            doc.setTextColor(255, 215, 0); // DORADO
             doc.text("Interpretación Sagrada", 20, textY);
             
             doc.setFont("times", "normal");
@@ -774,11 +780,13 @@
                 doc.text(quintText, 105, quintY + 15, null, null, "center");
             }
 
-            doc.setTextColor(100, 100, 100);
+            // FOOTER FILOSÓFICO
+            doc.setTextColor(150, 150, 150);
             doc.setFontSize(7);
-            doc.text("Astralis © 2025 - Tarot Matemático & IA", 105, 290, null, null, "center");
+            doc.setFont("times", "italic");
+            doc.text("\"El destino no puede medirse, es impredecible. La geometría sagrada es lo más cercano a entender el caos universal.\"", 105, 290, null, null, "center");
 
-            doc.save("Ficha_Astralis_Compacta.pdf");
+            doc.save("FICHA ASTRALIS.pdf");
         }
         
         function resetReading() {
