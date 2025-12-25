@@ -6,8 +6,9 @@
     <title>Lectura de Tarot - ComicVerse</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script> <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Lato:wght@300;400&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Lato:wght@300;400&family=Playfair+Display:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
 
     <style>
         :root {
@@ -99,7 +100,7 @@
             letter-spacing: 4px; color: rgba(255, 215, 0, 0.5); font-size: 0.7rem;
         }
 
-        /* FRENTE */
+        /* FRENTE GENERAL */
         .tarot-front {
             transform: rotateY(180deg);
             background: #111;
@@ -135,45 +136,55 @@
             border-radius: 50%; animation: spin-slow 10s linear infinite;
         }
 
-        /* ESTILO: ARCANOS MENORES */
+        /* --- ESTILO MEJORADO: ARCANOS MENORES --- */
         .style-minor {
-            border: 2px solid #a1a1aa;
+            border: 2px solid #555; /* Base border */
             background: #0f0f0f;
-            box-shadow: 0 0 15px rgba(161, 161, 170, 0.3);
-        }
-        .style-minor .card-header { 
-            height: 12%; border-bottom: 1px solid #555; display: flex; align-items: center; justify-content: center; 
-            background: rgba(255,255,255,0.05); color: #e2e8f0; 
-        }
-        .style-minor .card-footer { 
-            height: 18%; border-top: 1px solid #555; display: flex; flex-direction: column; justify-content: center; align-items: center; 
-            background: rgba(255,255,255,0.05); color: #e2e8f0;
+            /* Doble borde interno simulado */
+            box-shadow: inset 0 0 0 4px rgba(0,0,0,0.8), inset 0 0 0 6px rgba(255,255,255,0.1); 
         }
         
-        .suit-wands { border-color: #ef4444; background: linear-gradient(180deg, #2e0a0a, #000); }
-        .suit-wands .card-body { 
-            background-image: repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(239, 68, 68, 0.05) 10px, rgba(239, 68, 68, 0.05) 20px); 
+        .style-minor .card-header { 
+            height: 14%; border-bottom: 1px solid rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: space-between; padding: 0 15px;
+            background: rgba(0,0,0,0.4); color: #e2e8f0; font-family: 'Cinzel', serif;
         }
-        .suit-wands .main-icon { color: #ef4444; filter: drop-shadow(0 0 10px #f87171); animation: burn 1.5s infinite alternate ease-in-out; }
+        .style-minor .card-footer { 
+            height: 18%; border-top: 1px solid rgba(255,255,255,0.2); display: flex; flex-direction: column; justify-content: center; align-items: center; 
+            background: rgba(0,0,0,0.4); color: #e2e8f0;
+        }
 
-        .suit-cups { border-color: #3b82f6; background: linear-gradient(180deg, #0a182e, #000); }
+        /* Detalles Ornamentales en las esquinas */
+        .style-minor::before, .style-minor::after {
+            content: '✦'; position: absolute; font-size: 10px; color: rgba(255,255,255,0.3);
+        }
+        .style-minor::before { top: 5px; left: 5px; }
+        .style-minor::after { bottom: 5px; right: 5px; }
+
+        /* Estilos específicos por Palo (MEJORADOS) */
+        .suit-wands { border-color: #7f1d1d; background: radial-gradient(circle, #2a0a0a 0%, #000 100%); }
+        .suit-wands .card-body { 
+            background-image: repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(220, 38, 38, 0.03) 10px, rgba(220, 38, 38, 0.03) 20px); 
+        }
+        .suit-wands .main-icon { color: #ef4444; filter: drop-shadow(0 0 15px #b91c1c); animation: burn 1.5s infinite alternate ease-in-out; }
+
+        .suit-cups { border-color: #1e3a8a; background: radial-gradient(circle, #0a102a 0%, #000 100%); }
         .suit-cups .card-body { 
-            background-image: radial-gradient(circle at center, transparent 0%, rgba(59, 130, 246, 0.1) 100%);
+            background-image: radial-gradient(circle at center, transparent 0%, rgba(59, 130, 246, 0.05) 100%);
             background-size: 20px 20px; 
         }
-        .suit-cups .main-icon { color: #3b82f6; filter: drop-shadow(0 0 10px #60a5fa); animation: float 3s infinite ease-in-out; }
+        .suit-cups .main-icon { color: #60a5fa; filter: drop-shadow(0 0 15px #2563eb); animation: float 3s infinite ease-in-out; }
 
-        .suit-swords { border-color: #e5e7eb; background: linear-gradient(180deg, #1f2937, #000); }
+        .suit-swords { border-color: #4b5563; background: radial-gradient(circle, #1f2937 0%, #000 100%); }
         .suit-swords .card-body { 
-            background-image: linear-gradient(0deg, transparent 49%, rgba(255,255,255,0.05) 50%, transparent 51%); background-size: 100% 20px; 
+            background-image: linear-gradient(0deg, transparent 49%, rgba(255,255,255,0.03) 50%, transparent 51%); background-size: 100% 20px; 
         }
-        .suit-swords .main-icon { color: #e5e7eb; filter: drop-shadow(0 0 10px #fff); animation: clash 2s infinite ease-in-out; }
+        .suit-swords .main-icon { color: #e5e7eb; filter: drop-shadow(0 0 15px #9ca3af); animation: clash 2s infinite ease-in-out; }
 
-        .suit-pentacles { border-color: #22c55e; background: linear-gradient(180deg, #0f2916, #000); }
+        .suit-pentacles { border-color: #14532d; background: radial-gradient(circle, #052e16 0%, #000 100%); }
         .suit-pentacles .card-body { 
-            background-image: url("data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='2' cy='2' r='1' fill='%2322c55e' fill-opacity='0.1'/%3E%3C/svg%3E");
+            background-image: url("data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='2' cy='2' r='1' fill='%2322c55e' fill-opacity='0.05'/%3E%3C/svg%3E");
         }
-        .suit-pentacles .main-icon { color: #22c55e; filter: drop-shadow(0 0 10px #4ade80); animation: coin-spin 4s infinite linear; }
+        .suit-pentacles .main-icon { color: #4ade80; filter: drop-shadow(0 0 15px #166534); animation: coin-spin 4s infinite linear; }
 
         /* Elementos Internos */
         .card-body { flex: 1; display: flex; align-items: center; justify-content: center; position: relative; }
@@ -197,20 +208,29 @@
             animation: pulse-purple 3s infinite alternate;
         }
 
-        /* --- Modal Quintaesencia --- */
+        /* --- Modal Quintaesencia (FIXED SCROLL & LAYOUT) --- */
         .quint-modal {
             position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 200;
             display: none; align-items: center; justify-content: center; backdrop-filter: blur(15px);
         }
         .quint-content {
-            background: #1a0520; border: 3px double #FFD700; padding: 2.5rem;
-            border-radius: 20px; text-align: center; max-width: 500px; width: 95%;
+            background: #1a0520; border: 3px double #FFD700; padding: 2rem;
+            border-radius: 20px; text-align: center; max-width: 500px; width: 95%; max-height: 90vh;
             box-shadow: 0 0 80px rgba(255, 215, 0, 0.3); animation: zoomIn 0.5s;
-            position: relative; overflow: hidden;
+            position: relative; display: flex; flex-direction: column;
         }
+        
+        .quint-body-scroll {
+            overflow-y: auto; flex: 1; margin-bottom: 20px; padding-right: 5px;
+            /* Scrollbar styling */
+            scrollbar-width: thin; scrollbar-color: #FFD700 #1a0520;
+        }
+        .quint-body-scroll::-webkit-scrollbar { width: 8px; }
+        .quint-body-scroll::-webkit-scrollbar-thumb { background-color: #FFD700; border-radius: 4px; }
+        
         .quint-card-display {
-            width: 150px; height: 260px; margin: 0 auto 20px;
-            transform-style: preserve-3d; animation: float 4s infinite ease-in-out;
+            width: 120px; height: 200px; margin: 0 auto 20px;
+            transform-style: preserve-3d; animation: float 4s infinite ease-in-out; flex-shrink: 0;
         }
 
         /* --- Modal Límite / Mensaje Genérico --- */
@@ -297,10 +317,6 @@
                     <i class="fa-solid fa-star"></i> Calcular Quintaesencia
                 </button>
                 
-                <button onclick="downloadPDF()" class="bg-gradient-to-r from-green-600 to-teal-600 text-white px-6 py-3 rounded-full text-xs font-bold uppercase tracking-widest hover:scale-105 transition shadow-lg border border-white/20">
-                    <i class="fa-solid fa-file-pdf"></i> Descargar Resultados
-                </button>
-                
                 <button onclick="resetReading()" class="text-xs text-gray-400 hover:text-white underline uppercase tracking-widest border border-white/20 px-6 py-3 rounded-full hover:border-[#ffd700] transition">
                     <i class="fa-solid fa-rotate-right"></i> Nueva Lectura
                 </button>
@@ -337,15 +353,23 @@
 
     <div id="quint-modal" class="quint-modal">
         <div class="quint-content">
-            <h3 class="text-[#ffd700] font-bold text-2xl mb-2 mystic-font uppercase tracking-widest">Alma de la Lectura</h3>
-            <p class="text-xs text-gray-400 mb-6">La suma oculta de tu destino...</p>
+            <div class="quint-body-scroll">
+                <h3 class="text-[#ffd700] font-bold text-2xl mb-2 mystic-font uppercase tracking-widest">Alma de la Lectura</h3>
+                <p class="text-xs text-gray-400 mb-6">La suma oculta de tu destino...</p>
+                
+                <div id="quint-card-container" class="quint-card-display"></div>
+                
+                <h4 id="quint-name" class="text-white font-black text-xl mb-2">EL ARCANO</h4>
+                <div id="quint-meaning" class="text-gray-300 text-sm italic mb-6">Calculando...</div>
+            </div>
             
-            <div id="quint-card-container" class="quint-card-display"></div>
-            
-            <h4 id="quint-name" class="text-white font-black text-xl mb-2">EL ARCANO</h4>
-            <div id="quint-meaning" class="text-gray-300 text-sm italic mb-6">Calculando...</div>
-            
-            <button onclick="closeQuintModal()" class="text-xs text-white border border-white/30 px-6 py-2 rounded-full hover:bg-white/10 transition">Cerrar</button>
+            <div class="flex gap-2 justify-center pt-2 border-t border-white/10">
+                <button id="download-btn" onclick="downloadPDF()" class="hidden bg-gradient-to-r from-green-600 to-teal-600 text-white px-4 py-2 rounded-full text-[10px] font-bold uppercase tracking-widest hover:scale-105 transition shadow-lg border border-white/20">
+                    <i class="fa-solid fa-file-pdf"></i> Descargar Ficha
+                </button>
+
+                <button onclick="closeQuintModal()" class="text-xs text-white border border-white/30 px-6 py-2 rounded-full hover:bg-white/10 transition">Cerrar</button>
+            </div>
         </div>
     </div>
 
@@ -459,14 +483,13 @@
         window.downloadPDF = downloadPDF;
         window.closeQuintModal = () => document.getElementById('quint-modal').style.display = 'none';
 
-        // --- SISTEMA DE CONSULTA CORREGIDO ---
+        // --- SISTEMA DE CONSULTA ---
         let adWatched = false;
         const AD_LINK = "https://sonsstoop.com/m01qcuj94d?key=d329b61721f0136ad3e9f372b07145f6";
 
         async function handleConsult() {
             if (!currentUser) { document.getElementById('auth-modal').style.display = 'flex'; return; }
             
-            // Check Limits BEFORE anything else
             if (!userPremium) {
                 if (userAttempts >= 3) { showLimitModal(); return; }
                 const now = Date.now();
@@ -480,18 +503,15 @@
             const question = document.getElementById('user-question').value.trim();
             if (!question) return showCustomAlert("Silencio Astral", "El universo necesita una pregunta clara para responder.", "fa-comment-slash");
 
-            // LOGIC FOR AD: If not watched, open ad and STOP. DO NOT INCREMENT.
             if (!adWatched) {
                 window.open(AD_LINK, '_blank');
                 adWatched = true;
                 const btn = document.getElementById('consult-btn');
                 btn.innerHTML = '<span id="btn-text"><i class="fa-solid fa-sparkles"></i> Revelar Ahora</span>';
                 btn.classList.add('animate-pulse');
-                return; // Se detiene aquí. No cobra consulta.
+                return;
             }
 
-            // If we are here, adWatched is TRUE. User clicked "Revelar".
-            // NOW we charge the attempt.
             if (!userPremium) {
                 const userRef = doc(db, "users", currentUser.uid);
                 await updateDoc(userRef, { 
@@ -509,6 +529,7 @@
         // --- LÓGICA TAROT (78 Cartas) ---
         let deck = [];
         let currentSpread = [];
+        let quintessenceData = null; // Almacenar datos para el PDF
 
         const majorIcons = [
             "fa-person-walking", "fa-wand-magic-sparkles", "fa-book-journal-whills", "fa-venus", "fa-mars", "fa-church", "fa-heart", "fa-horse-head", "fa-hand-fist", "fa-user-secret", "fa-dharmachakra", "fa-scale-balanced", "fa-person-falling", "fa-skull", "fa-flask", "fa-ghost", "fa-tower-observation", "fa-star", "fa-moon", "fa-sun", "fa-gavel", "fa-earth-americas"
@@ -523,14 +544,12 @@
         const ranks = ["As", "Dos", "Tres", "Cuatro", "Cinco", "Seis", "Siete", "Ocho", "Nueve", "Diez", "Sota", "Caballo", "Reina", "Rey"];
 
         function buildDeck() {
-            // Majors (0-21)
             majors.forEach((name, i) => {
                 deck.push({ 
                     name: name, type: "Major", num: toRoman(i), value: i,
                     style: "style-major", icon: majorIcons[i] || "fa-star"
                 });
             });
-            // Minors (22-77)
             suits.forEach(s => {
                 ranks.forEach((r, i) => {
                     deck.push({
@@ -554,13 +573,14 @@
             return str;
         }
         
-        buildDeck(); // Total 78 cards
+        buildDeck();
 
         async function startReading(q) {
             document.getElementById('consult-btn').style.display = 'none';
             document.getElementById('game-area').classList.remove('hidden');
             const container = document.getElementById('cards-container');
             container.innerHTML = '';
+            quintessenceData = null; // Reset quintessence
 
             let picked = [];
             while(picked.length < 3) {
@@ -639,20 +659,23 @@
 
             let sum = currentSpread.reduce((acc, card) => acc + card.value, 0);
             
-            // Reducción Teosófica (siempre < 22, siempre Arcano Mayor)
             while (sum > 21) {
                 const digits = sum.toString().split('').map(Number);
                 sum = digits.reduce((a, b) => a + b, 0);
             }
 
             const quintCard = deck[sum]; 
+            quintessenceData = { card: quintCard, meaning: "Cargando..." };
 
             const modal = document.getElementById('quint-modal');
             const container = document.getElementById('quint-card-container');
             const nameEl = document.getElementById('quint-name');
             const meaningEl = document.getElementById('quint-meaning');
+            const dlBtn = document.getElementById('download-btn');
             
+            // Mostrar modal primero
             modal.style.display = 'flex';
+            dlBtn.classList.add('hidden'); // Ocultar botón descargar hasta terminar
             
             container.innerHTML = `
                 <div class="tarot-card flipped" style="width:100%; height:100%; box-shadow:none;">
@@ -665,81 +688,151 @@
             `;
             
             nameEl.innerText = quintCard.name;
-            meaningEl.innerText = "Invocando el espíritu de la carta...";
+            meaningEl.innerText = "Consultando a los arcanos supremos...";
 
-            // PROMPT LARGO Y DETALLADO
-            const prompt = `La Quintaesencia de una lectura de tarot es: ${quintCard.name}. Dame una explicación detallada, profunda y mística (aprox 80 palabras) de por qué esta carta es el ALMA oculta de la lectura. Explica su lección espiritual elevada.`;
+            const prompt = `La Quintaesencia de una lectura de tarot es: ${quintCard.name}. Dame una explicación detallada, profunda y mística (aprox 100 palabras) de por qué esta carta es el ALMA oculta de la lectura.`;
             
             try {
                 const res = await fetch(`https://text.pollinations.ai/${encodeURIComponent(prompt)}`);
                 if (!res.ok) throw new Error("Error API");
                 const text = await res.text();
                 meaningEl.innerText = text;
+                quintessenceData.meaning = text;
+                dlBtn.classList.remove('hidden'); // Mostrar botón descargar
             } catch(e) { 
-                meaningEl.innerText = "La energía suprema de esta carta guía tu destino más allá de lo visible. Medita en su figura."; 
+                const fallback = "La energía suprema de esta carta guía tu destino más allá de lo visible. Medita en su figura.";
+                meaningEl.innerText = fallback; 
+                quintessenceData.meaning = fallback;
+                dlBtn.classList.remove('hidden');
             }
         }
 
-        // --- FUNCIÓN PDF PROFESIONAL ---
+        // --- PDF ULTRA PROFESIONAL ---
         function downloadPDF() {
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
             const q = document.getElementById('user-question').value;
-            const date = new Date().toLocaleDateString('es-AR');
+            const date = new Date().toLocaleDateString('es-AR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
             
-            // Fondo oscuro (Estética Astralis)
-            doc.setFillColor(26, 11, 46); // Deep Purple
+            // Fondo Místico (Deep Purple)
+            doc.setFillColor(20, 10, 35);
             doc.rect(0, 0, 210, 297, 'F');
             
+            // Marco Dorado (Borde)
+            doc.setDrawColor(255, 215, 0); // Gold
+            doc.setLineWidth(1);
+            doc.rect(5, 5, 200, 287);
+            doc.setLineWidth(0.5);
+            doc.rect(7, 7, 196, 283); // Doble marco
+
             // Header
-            doc.setTextColor(255, 215, 0); // Gold
-            doc.setFont("helvetica", "bold");
-            doc.setFontSize(22);
-            doc.text("ASTRALIS", 105, 20, null, null, "center");
+            doc.setTextColor(255, 215, 0);
+            doc.setFont("times", "bold");
+            doc.setFontSize(28);
+            doc.text("ASTRALIS", 105, 25, null, null, "center");
             
             doc.setFontSize(12);
-            doc.setTextColor(226, 232, 240); // Silver
-            doc.text("Reporte Oficial de Lectura de Tarot", 105, 28, null, null, "center");
+            doc.setTextColor(200, 200, 200);
+            doc.setFont("times", "italic");
+            doc.text("Oráculo & Tarot Profesional", 105, 32, null, null, "center");
             
+            // Separador
             doc.setDrawColor(255, 215, 0);
-            doc.line(20, 35, 190, 35);
+            doc.line(40, 38, 170, 38);
 
-            // Info Usuario
-            doc.setFontSize(10);
-            doc.text(`Fecha: ${date}`, 20, 45);
-            doc.text(`Pregunta: "${q}"`, 20, 52);
-
-            // Cartas
+            // Información de la Sesión
+            doc.setFont("times", "bold");
             doc.setFontSize(14);
-            doc.setTextColor(255, 215, 0);
-            doc.text("La Tirada", 20, 65);
-
-            doc.setFontSize(11);
             doc.setTextColor(255, 255, 255);
+            doc.text("La Consulta", 20, 50);
+            
+            doc.setFont("times", "normal");
+            doc.setFontSize(11);
+            doc.setTextColor(220, 220, 220);
+            doc.text(`Fecha: ${date}`, 20, 58);
+            
+            const splitQuestion = doc.splitTextToSize(`Pregunta: "${q}"`, 170);
+            doc.text(splitQuestion, 20, 65);
+
+            let cursorY = 65 + (splitQuestion.length * 5) + 10;
+
+            // La Tirada (Resumen)
+            doc.setFont("times", "bold");
+            doc.setFontSize(14);
+            doc.setTextColor(255, 255, 255);
+            doc.text("Arcanos Revelados", 20, cursorY);
+            cursorY += 8;
+
+            doc.setFont("times", "normal");
+            doc.setFontSize(11);
+            doc.setTextColor(255, 215, 0); // Gold for cards
             if(currentSpread.length === 3) {
-                doc.text(`1. Pasado: ${currentSpread[0].name}`, 25, 75);
-                doc.text(`2. Presente: ${currentSpread[1].name}`, 25, 82);
-                doc.text(`3. Futuro: ${currentSpread[2].name}`, 25, 89);
+                doc.text(`I. Pasado: ${currentSpread[0].name}`, 25, cursorY);
+                doc.text(`II. Presente: ${currentSpread[1].name}`, 25, cursorY + 6);
+                doc.text(`III. Futuro: ${currentSpread[2].name}`, 25, cursorY + 12);
+            }
+            cursorY += 20;
+
+            // Interpretación
+            doc.setFont("times", "bold");
+            doc.setFontSize(14);
+            doc.setTextColor(255, 255, 255);
+            doc.text("Interpretación Sagrada", 20, cursorY);
+            cursorY += 8;
+
+            doc.setFont("times", "normal");
+            doc.setFontSize(10);
+            doc.setTextColor(230, 230, 230);
+            const rawText = document.getElementById('ai-response').innerText;
+            const splitText = doc.splitTextToSize(rawText, 170);
+            doc.text(splitText, 20, cursorY);
+            
+            cursorY += (splitText.length * 4) + 10;
+
+            // QUINTAESENCIA (El Alma)
+            if (quintessenceData) {
+                // Chequear si necesitamos nueva página
+                if (cursorY > 240) {
+                    doc.addPage();
+                    doc.setFillColor(20, 10, 35);
+                    doc.rect(0, 0, 210, 297, 'F');
+                    doc.setDrawColor(255, 215, 0);
+                    doc.rect(5, 5, 200, 287);
+                    cursorY = 30;
+                }
+
+                doc.setDrawColor(255, 215, 0);
+                doc.setLineWidth(0.5);
+                doc.line(20, cursorY, 190, cursorY);
+                cursorY += 10;
+
+                doc.setFont("times", "bold");
+                doc.setFontSize(16);
+                doc.setTextColor(255, 215, 0);
+                doc.text("QUINTAESENCIA", 105, cursorY, null, null, "center");
+                cursorY += 7;
+
+                doc.setFontSize(12);
+                doc.setTextColor(255, 255, 255);
+                doc.text(`Arcano Oculto: ${quintessenceData.card.name}`, 105, cursorY, null, null, "center");
+                cursorY += 10;
+
+                doc.setFont("times", "italic");
+                doc.setFontSize(10);
+                doc.setTextColor(200, 200, 200);
+                const splitQuint = doc.splitTextToSize(quintessenceData.meaning, 160);
+                doc.text(splitQuint, 105, cursorY, null, null, "center");
             }
 
-            // Interpretación (Limpieza de HTML)
-            doc.setFontSize(14);
-            doc.setTextColor(255, 215, 0);
-            doc.text("Interpretación de los Astros", 20, 105);
-
-            const rawText = document.getElementById('ai-response').innerText;
-            doc.setFontSize(10);
-            doc.setTextColor(220, 220, 220);
-            
-            const splitText = doc.splitTextToSize(rawText, 170);
-            doc.text(splitText, 20, 115);
-
-            // Footer
+            // Footer Elegante
+            const pageHeight = doc.internal.pageSize.height;
+            doc.setFont("times", "normal");
             doc.setFontSize(8);
             doc.setTextColor(100, 100, 100);
-            doc.text("Generado por ComicVerse - Tarot Astral", 105, 280, null, null, "center");
+            doc.text("Astralis © 2025 - ComicVerse Tarot System", 105, pageHeight - 15, null, null, "center");
+            doc.text("La magia reside en la intención.", 105, pageHeight - 11, null, null, "center");
 
-            doc.save("Astralis_Lectura.pdf");
+            doc.save("Ficha_Astralis_Tarot.pdf");
         }
         
         function resetReading() {
@@ -749,6 +842,7 @@
              const btn = document.getElementById('consult-btn');
              btn.style.display = 'block';
              currentSpread = [];
+             quintessenceData = null;
              window.scrollTo({ top: 0, behavior: 'smooth' });
         }
     </script>
